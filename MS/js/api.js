@@ -19,7 +19,7 @@
  *
  * ↓ここを自分のWebアプリURLに変更
  */
-const API_URL = "ここにWebアプリのURL";
+const API_URL = "https://script.google.com/macros/s/AKfycbz5UiyMkUi4qtgV43qOINz_gSODkYe1T-lhV6ug-SnnUkEUF4fwgqXthI7T9PU0a78qww/exec";
 
 
 /**
