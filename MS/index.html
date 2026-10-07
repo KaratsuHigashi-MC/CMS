@@ -12,14 +12,18 @@
 
   <title>譜面台管理システム</title>
 
+
   <style>
 
     * {
       box-sizing: border-box;
     }
 
+
     body {
+
       margin: 0;
+
       padding: 20px;
 
       font-family:
@@ -29,7 +33,9 @@
         sans-serif;
 
       background: #f5f5f5;
+
       color: #222;
+
     }
 
 
@@ -38,15 +44,33 @@
      * ======================================== */
 
     .container {
+
       width: 100%;
+
       max-width: 900px;
+
       margin: 0 auto;
+
     }
 
 
     h1 {
+
       margin: 0 0 20px;
+
       font-size: 28px;
+
+    }
+
+
+    h2 {
+
+      margin-top: 0;
+
+      margin-bottom: 20px;
+
+      font-size: 20px;
+
     }
 
 
@@ -55,6 +79,7 @@
      * ======================================== */
 
     .card {
+
       background: #fff;
 
       border-radius: 10px;
@@ -65,6 +90,64 @@
 
       box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.08);
+
+    }
+
+
+    /* ========================================
+     * メニューボタン
+     * ======================================== */
+
+    .menu-area {
+
+      display: grid;
+
+      grid-template-columns: 1fr 1fr;
+
+      gap: 10px;
+
+    }
+
+
+    .menu-button {
+
+      width: 100%;
+
+      min-height: 55px;
+
+      border: none;
+
+      border-radius: 8px;
+
+      font-size: 16px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      color: #fff;
+
+    }
+
+
+    .menu-button.add {
+
+      background: #1976d2;
+
+    }
+
+
+    .menu-button.manage {
+
+      background: #333;
+
+    }
+
+
+    .menu-button:hover {
+
+      opacity: 0.85;
+
     }
 
 
@@ -73,12 +156,16 @@
      * ======================================== */
 
     .search-area {
+
       display: flex;
+
       gap: 10px;
+
     }
 
 
     .search-area input {
+
       flex: 1;
 
       min-width: 0;
@@ -91,10 +178,19 @@
       border-radius: 6px;
 
       font-size: 16px;
+
+    }
+
+
+    .search-area button {
+
+      min-width: 90px;
+
     }
 
 
     button {
+
       padding: 10px 18px;
 
       border: none;
@@ -108,27 +204,44 @@
       font-size: 15px;
 
       cursor: pointer;
+
     }
 
 
     button:hover {
+
       opacity: 0.85;
+
     }
 
 
     button.secondary {
+
       background: #777;
+
     }
 
 
     button.save {
+
       background: #1976d2;
+
+    }
+
+
+    button.register {
+
+      background: #1976d2;
+
     }
 
 
     button:disabled {
+
       background: #aaa;
+
       cursor: not-allowed;
+
     }
 
 
@@ -137,21 +250,27 @@
      * ======================================== */
 
     #status {
+
       margin-top: 10px;
 
       font-size: 14px;
 
-      color: #666;
+      min-height: 20px;
+
     }
 
 
     .error {
+
       color: #d32f2f !important;
+
     }
 
 
     .success {
+
       color: #2e7d32 !important;
+
     }
 
 
@@ -160,11 +279,14 @@
      * ======================================== */
 
     #stand-area {
+
       display: none;
+
     }
 
 
     .stand-title {
+
       display: flex;
 
       align-items: center;
@@ -174,13 +296,55 @@
       gap: 10px;
 
       margin-bottom: 20px;
+
     }
 
 
     .stand-id {
+
       font-size: 24px;
 
       font-weight: bold;
+
+    }
+
+
+    /* ========================================
+     * 追加フォーム
+     * ======================================== */
+
+    #add-area {
+
+      display: none;
+
+    }
+
+
+    .id-preview {
+
+      padding: 14px;
+
+      background: #f0f0f0;
+
+      border-radius: 6px;
+
+      font-size: 22px;
+
+      font-weight: bold;
+
+      letter-spacing: 1px;
+
+    }
+
+
+    .id-description {
+
+      margin-top: 6px;
+
+      font-size: 12px;
+
+      color: #777;
+
     }
 
 
@@ -189,11 +353,14 @@
      * ======================================== */
 
     .form-row {
+
       margin-bottom: 16px;
+
     }
 
 
     .form-row label {
+
       display: block;
 
       margin-bottom: 6px;
@@ -201,6 +368,7 @@
       font-weight: bold;
 
       font-size: 14px;
+
     }
 
 
@@ -220,18 +388,23 @@
       font-size: 15px;
 
       background: #fff;
+
     }
 
 
     .form-row textarea {
+
       min-height: 100px;
 
       resize: vertical;
+
     }
 
 
     .form-row input[readonly] {
+
       background: #eee;
+
     }
 
 
@@ -240,11 +413,15 @@
      * ======================================== */
 
     .button-area {
+
       display: flex;
 
       gap: 10px;
 
       margin-top: 20px;
+
+      flex-wrap: wrap;
+
     }
 
 
@@ -253,31 +430,40 @@
      * ======================================== */
 
     #loading {
+
       display: none;
 
       position: fixed;
 
       top: 0;
+
       left: 0;
+
       right: 0;
+
       bottom: 0;
 
       background:
         rgba(255, 255, 255, 0.7);
 
       align-items: center;
+
       justify-content: center;
 
       z-index: 1000;
+
     }
 
 
     #loading.show {
+
       display: flex;
+
     }
 
 
     .loading-box {
+
       background: #fff;
 
       padding: 20px 30px;
@@ -288,6 +474,7 @@
         0 2px 10px rgba(0, 0, 0, 0.15);
 
       font-size: 16px;
+
     }
 
 
@@ -298,32 +485,58 @@
     @media (max-width: 600px) {
 
       body {
+
         padding: 10px;
+
       }
 
 
       h1 {
+
         font-size: 23px;
+
       }
 
 
       .card {
+
         padding: 15px;
+
+      }
+
+
+      .menu-area {
+
+        grid-template-columns: 1fr;
+
       }
 
 
       .search-area {
+
         flex-direction: column;
+
+      }
+
+
+      .search-area button {
+
+        width: 100%;
+
       }
 
 
       .button-area {
+
         flex-direction: column;
+
       }
 
 
-      button {
+      .button-area button {
+
         width: 100%;
+
       }
 
     }
@@ -346,6 +559,38 @@
     <h1>
       譜面台管理システム
     </h1>
+
+
+    <!-- ======================================
+     * メニュー
+     * ====================================== -->
+
+    <div class="card">
+
+      <div class="menu-area">
+
+
+        <button
+          type="button"
+          class="menu-button add"
+          id="show-add-button"
+        >
+          ＋ 譜面台を追加
+        </button>
+
+
+        <button
+          type="button"
+          class="menu-button manage"
+          id="manage-button"
+        >
+          譜面台を管理
+        </button>
+
+
+      </div>
+
+    </div>
 
 
     <!-- ======================================
@@ -592,6 +837,270 @@
     </div>
 
 
+    <!-- ======================================
+     * 譜面台追加
+     * ====================================== -->
+
+    <div
+      class="card"
+      id="add-area"
+    >
+
+
+      <h2>
+        譜面台を追加
+      </h2>
+
+
+      <!-- タイプ -->
+
+      <div class="form-row">
+
+        <label for="add-type">
+          タイプ
+        </label>
+
+
+        <select
+          id="add-type"
+        >
+
+          <option value="">
+            選択してください
+          </option>
+
+          <option value="A">
+            Aタイプ
+          </option>
+
+          <option value="B">
+            Bタイプ
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- 自動生成ID -->
+
+      <div class="form-row">
+
+        <label>
+          新しいID
+        </label>
+
+
+        <div
+          class="id-preview"
+          id="add-id-preview"
+        >
+          -
+        </div>
+
+
+        <div class="id-description">
+          タイプを選択すると、現在使用されている番号の最大値＋1で自動生成されます。
+        </div>
+
+      </div>
+
+
+      <!-- 管理パート -->
+
+      <div class="form-row">
+
+        <label for="add-management-part">
+          管理パート
+        </label>
+
+
+        <select
+          id="add-management-part"
+        >
+
+          <option value="">
+            選択してください
+          </option>
+
+          <option value="Fl">
+            Fl
+          </option>
+
+          <option value="Ob">
+            Ob
+          </option>
+
+          <option value="Cl">
+            Cl
+          </option>
+
+          <option value="Fg">
+            Fg
+          </option>
+
+          <option value="Sax">
+            Sax
+          </option>
+
+          <option value="Tp">
+            Tp
+          </option>
+
+          <option value="Hr">
+            Hr
+          </option>
+
+          <option value="Tb">
+            Tb
+          </option>
+
+          <option value="Euph">
+            Euph
+          </option>
+
+          <option value="Tuba">
+            Tuba
+          </option>
+
+          <option value="Perc">
+            Perc
+          </option>
+
+          <option value="String">
+            String
+          </option>
+
+          <option value="Other">
+            Other
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- 使用状況 -->
+
+      <div class="form-row">
+
+        <label for="add-usage-status">
+          使用状況
+        </label>
+
+
+        <select
+          id="add-usage-status"
+        >
+
+          <option value="空き">
+            空き
+          </option>
+
+          <option value="使用中">
+            使用中
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- 使用可否 -->
+
+      <div class="form-row">
+
+        <label for="add-availability">
+          使用可否
+        </label>
+
+
+        <select
+          id="add-availability"
+        >
+
+          <option value="可能">
+            可能
+          </option>
+
+          <option value="注意">
+            注意
+          </option>
+
+          <option value="不可">
+            不可
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- 損傷情報 -->
+
+      <div class="form-row">
+
+        <label for="add-damage">
+          損傷情報
+        </label>
+
+
+        <input
+          type="text"
+          id="add-damage"
+          placeholder="損傷があれば入力"
+        >
+
+      </div>
+
+
+      <!-- メモ -->
+
+      <div class="form-row">
+
+        <label for="add-memo">
+          メモ
+        </label>
+
+
+        <textarea
+          id="add-memo"
+          placeholder="メモ"
+        ></textarea>
+
+      </div>
+
+
+      <!-- ボタン -->
+
+      <div class="button-area">
+
+        <button
+          id="register-button"
+          class="register"
+          type="button"
+        >
+          登録
+        </button>
+
+
+        <button
+          id="cancel-add-button"
+          class="secondary"
+          type="button"
+        >
+          キャンセル
+        </button>
+
+      </div>
+
+
+      <div id="add-status"></div>
+
+
+    </div>
+
+
   </div>
 
 
@@ -625,51 +1134,166 @@
 
 
     /* ==================================================
-     * DOM取得
+     * 現在の追加用ID
+     * ================================================== */
+
+    let currentAddId = null;
+
+
+    /* ==================================================
+     * DOM
      * ================================================== */
 
     const searchId =
       document.getElementById("search-id");
 
+
     const searchButton =
-      document.getElementById("search-button");
+      document.getElementById(
+        "search-button"
+      );
+
 
     const status =
       document.getElementById("status");
 
+
     const standArea =
-      document.getElementById("stand-area");
+      document.getElementById(
+        "stand-area"
+      );
+
 
     const displayId =
-      document.getElementById("display-id");
+      document.getElementById(
+        "display-id"
+      );
+
 
     const managementPart =
-      document.getElementById("management-part");
+      document.getElementById(
+        "management-part"
+      );
+
 
     const usageStatus =
-      document.getElementById("usage-status");
+      document.getElementById(
+        "usage-status"
+      );
+
 
     const availability =
-      document.getElementById("availability");
+      document.getElementById(
+        "availability"
+      );
+
 
     const damage =
       document.getElementById("damage");
 
+
     const memo =
       document.getElementById("memo");
 
+
     const saveButton =
-      document.getElementById("save-button");
+      document.getElementById(
+        "save-button"
+      );
+
 
     const clearButton =
-      document.getElementById("clear-button");
+      document.getElementById(
+        "clear-button"
+      );
+
+
+    const showAddButton =
+      document.getElementById(
+        "show-add-button"
+      );
+
+
+    const manageButton =
+      document.getElementById(
+        "manage-button"
+      );
+
+
+    const addArea =
+      document.getElementById(
+        "add-area"
+      );
+
+
+    const addType =
+      document.getElementById(
+        "add-type"
+      );
+
+
+    const addIdPreview =
+      document.getElementById(
+        "add-id-preview"
+      );
+
+
+    const addManagementPart =
+      document.getElementById(
+        "add-management-part"
+      );
+
+
+    const addUsageStatus =
+      document.getElementById(
+        "add-usage-status"
+      );
+
+
+    const addAvailability =
+      document.getElementById(
+        "add-availability"
+      );
+
+
+    const addDamage =
+      document.getElementById(
+        "add-damage"
+      );
+
+
+    const addMemo =
+      document.getElementById(
+        "add-memo"
+      );
+
+
+    const registerButton =
+      document.getElementById(
+        "register-button"
+      );
+
+
+    const cancelAddButton =
+      document.getElementById(
+        "cancel-add-button"
+      );
+
+
+    const addStatus =
+      document.getElementById(
+        "add-status"
+      );
+
 
     const loading =
-      document.getElementById("loading");
+      document.getElementById(
+        "loading"
+      );
 
 
     /* ==================================================
-     * ローディング表示
+     * ローディング
      * ================================================== */
 
     function showLoading() {
@@ -687,14 +1311,33 @@
 
 
     /* ==================================================
-     * ステータス表示
+     * ステータス
      * ================================================== */
 
-    function setStatus(message, type = "") {
+    function setStatus(
+      message,
+      type = ""
+    ) {
 
-      status.textContent = message;
+      status.textContent =
+        message;
 
-      status.className = type;
+      status.className =
+        type;
+
+    }
+
+
+    function setAddStatus(
+      message,
+      type = ""
+    ) {
+
+      addStatus.textContent =
+        message;
+
+      addStatus.className =
+        type;
 
     }
 
@@ -719,7 +1362,35 @@
 
       memo.value = "";
 
-      standArea.style.display = "none";
+      standArea.style.display =
+        "none";
+
+    }
+
+
+    /* ==================================================
+     * 追加フォームクリア
+     * ================================================== */
+
+    function clearAddForm() {
+
+      currentAddId = null;
+
+      addType.value = "";
+
+      addIdPreview.textContent = "-";
+
+      addManagementPart.value = "";
+
+      addUsageStatus.value = "空き";
+
+      addAvailability.value = "可能";
+
+      addDamage.value = "";
+
+      addMemo.value = "";
+
+      setAddStatus("");
 
     }
 
@@ -740,7 +1411,9 @@
 
 
       currentStandId =
-        String(stand["ID"] || "");
+        String(
+          stand["ID"] || ""
+        );
 
 
       displayId.textContent =
@@ -767,7 +1440,8 @@
         stand["メモ"] || "";
 
 
-      standArea.style.display = "block";
+      standArea.style.display =
+        "block";
 
     }
 
@@ -778,7 +1452,8 @@
 
     async function searchStand(id) {
 
-      id = String(id || "").trim();
+      id =
+        String(id || "").trim();
 
 
       if (!id) {
@@ -819,7 +1494,8 @@
 
 
         setStatus(
-          error.message || "検索に失敗しました",
+          error.message ||
+          "検索に失敗しました",
           "error"
         );
 
@@ -896,11 +1572,248 @@
       } catch (error) {
 
         setStatus(
-          error.message || "保存に失敗しました",
+          error.message ||
+          "保存に失敗しました",
           "error"
         );
 
       } finally {
+
+        hideLoading();
+
+      }
+
+    }
+
+
+    /* ==================================================
+     * 追加フォーム表示
+     * ================================================== */
+
+    function showAddArea() {
+
+      clearAddForm();
+
+      standArea.style.display =
+        "none";
+
+      addArea.style.display =
+        "block";
+
+      setStatus("");
+
+      addType.focus();
+
+      window.scrollTo({
+        top: addArea.offsetTop - 20,
+        behavior: "smooth"
+      });
+
+    }
+
+
+    /* ==================================================
+     * 追加フォーム非表示
+     * ================================================== */
+
+    function hideAddArea() {
+
+      clearAddForm();
+
+      addArea.style.display =
+        "none";
+
+    }
+
+
+    /* ==================================================
+     * 次のIDを取得
+     * ================================================== */
+
+    async function updateNextId() {
+
+      const type =
+        addType.value;
+
+
+      currentAddId = null;
+
+      addIdPreview.textContent =
+        "-";
+
+
+      if (!type) {
+
+        return;
+
+      }
+
+
+      showLoading();
+
+      setAddStatus(
+        "IDを取得しています..."
+      );
+
+
+      try {
+
+        const nextId =
+          await getNextId(type);
+
+
+        currentAddId =
+          nextId;
+
+
+        addIdPreview.textContent =
+          nextId;
+
+
+        setAddStatus("");
+
+
+      } catch (error) {
+
+        addIdPreview.textContent =
+          "-";
+
+
+        setAddStatus(
+          error.message ||
+          "次のIDの取得に失敗しました",
+
+          "error"
+        );
+
+      } finally {
+
+        hideLoading();
+
+      }
+
+    }
+
+
+    /* ==================================================
+     * 譜面台追加
+     * ================================================== */
+
+    async function registerStand() {
+
+      const type =
+        addType.value;
+
+
+      if (!type) {
+
+        setAddStatus(
+          "タイプを選択してください",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      if (!currentAddId) {
+
+        setAddStatus(
+          "IDを取得できていません",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const data = {
+
+        "管理パート":
+          addManagementPart.value,
+
+        "使用状況":
+          addUsageStatus.value,
+
+        "使用可否":
+          addAvailability.value,
+
+        "損傷情報":
+          addDamage.value,
+
+        "メモ":
+          addMemo.value
+
+      };
+
+
+      registerButton.disabled =
+        true;
+
+
+      showLoading();
+
+      setAddStatus("");
+
+
+      try {
+
+        const added =
+          await addStand(
+            type,
+            data
+          );
+
+
+        /* --------------------------------
+         * 登録成功
+         * -------------------------------- */
+
+        const registeredId =
+          String(
+            added["ID"] || currentAddId
+          );
+
+
+        clearAddForm();
+
+        addArea.style.display =
+          "none";
+
+
+        /* --------------------------------
+         * 登録した譜面台を表示
+         * -------------------------------- */
+
+        searchId.value =
+          registeredId;
+
+
+        displayStand(added);
+
+
+        setStatus(
+          registeredId +
+          " を登録しました",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        setAddStatus(
+          error.message ||
+          "譜面台の登録に失敗しました",
+
+          "error"
+        );
+
+      } finally {
+
+        registerButton.disabled =
+          false;
 
         hideLoading();
 
@@ -963,7 +1876,7 @@
 
 
     /* ==================================================
-     * 保存ボタン
+     * 保存
      * ================================================== */
 
     saveButton.addEventListener(
@@ -977,7 +1890,7 @@
 
 
     /* ==================================================
-     * クリアボタン
+     * クリア
      * ================================================== */
 
     clearButton.addEventListener(
@@ -995,6 +1908,77 @@
 
 
     /* ==================================================
+     * 譜面台追加ボタン
+     * ================================================== */
+
+    showAddButton.addEventListener(
+      "click",
+      function () {
+
+        showAddArea();
+
+      }
+    );
+
+
+    /* ==================================================
+     * 譜面台管理ボタン
+     * ================================================== */
+
+    manageButton.addEventListener(
+      "click",
+      function () {
+
+        window.location.href =
+          "list.html";
+
+      }
+    );
+
+
+    /* ==================================================
+     * タイプ変更
+     * ================================================== */
+
+    addType.addEventListener(
+      "change",
+      function () {
+
+        updateNextId();
+
+      }
+    );
+
+
+    /* ==================================================
+     * 登録
+     * ================================================== */
+
+    registerButton.addEventListener(
+      "click",
+      function () {
+
+        registerStand();
+
+      }
+    );
+
+
+    /* ==================================================
+     * 追加キャンセル
+     * ================================================== */
+
+    cancelAddButton.addEventListener(
+      "click",
+      function () {
+
+        hideAddArea();
+
+      }
+    );
+
+
+    /* ==================================================
      * 初期処理
      * ================================================== */
 
@@ -1004,24 +1988,29 @@
         getUrlId();
 
 
-      // ----------------------------------------
-      // URLにIDがある場合
-      // ----------------------------------------
+      /* --------------------------------
+       * URLにIDがある場合
+       * -------------------------------- */
 
       if (urlId) {
 
-        searchId.value = urlId;
+        searchId.value =
+          urlId;
 
-        await searchStand(urlId);
+
+        await searchStand(
+          urlId
+        );
+
 
         return;
 
       }
 
 
-      // ----------------------------------------
-      // ID指定がない場合
-      // ----------------------------------------
+      /* --------------------------------
+       * ID指定がない場合
+       * -------------------------------- */
 
       clearForm();
 
