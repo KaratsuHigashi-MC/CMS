@@ -228,3 +228,36 @@ function setupAvailabilitySelect(
   );
 
 }
+
+
+
+
+/**
+ * ========================================
+ * データキャッシュ設定
+ * ========================================
+ */
+
+
+/**
+ * list.html の自動更新間隔
+ *
+ * 24時間
+ */
+const LIST_CACHE_HOURS = 24;
+
+
+/**
+ * edit.html の自動更新間隔
+ *
+ * 24時間
+ */
+const EDIT_CACHE_HOURS = 24;
+
+
+/**
+ * index.html の自動更新間隔
+ *
+ * 7日間
+ */
+const INDEX_CACHE_HOURS = 24 * 7;
