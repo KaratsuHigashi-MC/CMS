@@ -1,1478 +1,1657 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8">
+    <title>譜面台管理システム - ホーム</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+    <style>
+      * {
+        box-sizing: border-box;
+      }
 
-  <title>譜面台管理システム</title>
+      body {
+        margin: 0;
+        padding: 0;
 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  <!-- 共通設定 -->
-  <script src="config.js"></script>
+        background: #f5f6f7;
+        color: #222;
+      }
 
-  <!-- 共通API -->
-  <script src="api.js"></script>
+      /* ========================================
+       ヘッダー
+       ======================================== */
 
+      .header {
+        height: 50px;
 
-  <style>
+        display: flex;
+        align-items: center;
 
-    * {
-      box-sizing: border-box;
-    }
+        padding: 0 10px;
 
+        background: #fff;
 
-    body {
-      margin: 0;
-      padding: 0;
+        border-bottom: 1px solid #ddd;
 
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
+        position: sticky;
+        top: 0;
 
-      background: #f5f6f8;
-      color: #222;
-    }
+        z-index: 100;
+      }
 
+      .header-title {
+        font-size: 16px;
+        font-weight: 600;
 
-    .container {
-      width: 100%;
-      max-width: 900px;
+        white-space: nowrap;
+      }
 
-      margin: 0 auto;
+      .header-info {
+        margin-left: auto;
 
-      padding: 24px 16px 60px;
-    }
+        display: flex;
+        align-items: center;
 
+        gap: 8px;
 
-    h1 {
-      margin: 0 0 24px;
+        min-width: 0;
+      }
 
-      font-size: 28px;
-      font-weight: 700;
-    }
+      .last-updated {
+        font-size: 10px;
 
+        color: #999;
 
-    h2 {
-      margin: 0 0 18px;
+        white-space: nowrap;
+      }
 
-      font-size: 20px;
-    }
+      .refresh-button {
+        border: 1px solid #ccc;
 
+        background: #fff;
 
-    .menu {
-      display: grid;
+        color: #333;
 
-      grid-template-columns:
-        repeat(2, 1fr);
+        border-radius: 5px;
 
-      gap: 12px;
+        padding: 5px 8px;
 
-      margin-bottom: 24px;
-    }
+        font-size: 12px;
 
+        cursor: pointer;
 
-    button {
-      border: none;
+        white-space: nowrap;
+      }
 
-      border-radius: 8px;
+      .refresh-button:active {
+        background: #eee;
+      }
 
-      padding: 12px 18px;
+      .refresh-button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
 
-      font-size: 15px;
-
-      cursor: pointer;
-    }
-
-
-    .menu button {
-      min-height: 52px;
-
-      background: #222;
-      color: white;
-
-      font-weight: 600;
-    }
-
-
-    .menu button:hover {
-      opacity: 0.85;
-    }
-
-
-    .card {
-      background: white;
-
-      border-radius: 10px;
-
-      padding: 20px;
-
-      margin-bottom: 20px;
-
-      box-shadow:
-        0 2px 8px rgba(0, 0, 0, 0.06);
-    }
-
-
-    .search-area {
-      display: flex;
-
-      gap: 8px;
-    }
-
-
-    .search-area input {
-      flex: 1;
-    }
-
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-
-      padding: 10px 12px;
-
-      border: 1px solid #ccc;
-
-      border-radius: 6px;
-
-      font-size: 15px;
-
-      background: white;
-    }
-
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-
-      border-color: #666;
-    }
-
-
-    textarea {
-      min-height: 100px;
-
-      resize: vertical;
-    }
-
-
-    label {
-      display: block;
-
-      margin-bottom: 6px;
-
-      font-size: 14px;
-
-      font-weight: 600;
-    }
-
-
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-
-    .form-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 16px;
-    }
-
-
-    .id-display {
-      padding: 12px;
-
-      border-radius: 6px;
-
-      background: #f1f2f4;
-
-      font-size: 18px;
-
-      font-weight: 700;
-
-      letter-spacing: 0.5px;
-    }
-
-
-    .id-placeholder {
-      color: #888;
-
-      font-weight: 400;
-    }
-
-
-    .button-row {
-      display: flex;
-
-      gap: 8px;
-
-      margin-top: 20px;
-    }
-
-
-    .primary-button {
-      background: #222;
-
-      color: white;
-
-      font-weight: 600;
-    }
-
-
-    .secondary-button {
-      background: #e8e9ec;
-
-      color: #222;
-    }
-
-
-    .danger-button {
-      background: #eee;
-
-      color: #555;
-    }
-
-
-    .message {
-      display: none;
-
-      margin-bottom: 16px;
-
-      padding: 12px;
-
-      border-radius: 6px;
-
-      font-size: 14px;
-    }
-
-
-    .message.success {
-      display: block;
-
-      background: #e8f5e9;
-
-      color: #2e7d32;
-    }
-
-
-    .message.error {
-      display: block;
-
-      background: #ffebee;
-
-      color: #c62828;
-    }
-
-
-    .stand-info {
-      display: none;
-    }
-
-
-    .stand-info.visible {
-      display: block;
-    }
-
-
-    .info-grid {
-      display: grid;
-
-      grid-template-columns:
-        repeat(2, 1fr);
-
-      gap: 12px;
-    }
-
-
-    .info-item {
-      padding: 12px;
-
-      background: #f7f7f8;
-
-      border-radius: 6px;
-    }
-
-
-    .info-label {
-      margin-bottom: 4px;
-
-      font-size: 12px;
-
-      color: #777;
-    }
-
-
-    .info-value {
-      font-size: 15px;
-
-      white-space: pre-wrap;
-
-      word-break: break-word;
-    }
-
-
-    .loading {
-      display: none;
-
-      margin-top: 12px;
-
-      color: #777;
-
-      font-size: 14px;
-    }
-
-
-    .loading.visible {
-      display: block;
-    }
-
-
-    @media (max-width: 600px) {
+      /* ========================================
+       メイン
+       ======================================== */
 
       .container {
-        padding:
-          16px
-          12px
-          40px;
+        width: 100%;
+
+        max-width: 700px;
+
+        margin: 0 auto;
+
+        padding: 16px 12px 30px;
       }
 
+      .page-title {
+        margin: 0 0 14px;
 
-      h1 {
-        font-size: 24px;
+        font-size: 20px;
+        font-weight: 600;
       }
 
+      /* ========================================
+       メッセージ
+       ======================================== */
 
-      .menu {
-        grid-template-columns: 1fr;
+      .message {
+        display: none;
+
+        margin-bottom: 12px;
+
+        padding: 10px 12px;
+
+        border-radius: 6px;
+
+        font-size: 13px;
       }
 
-
-      .form-grid {
-        grid-template-columns: 1fr;
+      .message.show {
+        display: block;
       }
 
+      .message.info {
+        background: #eef3fa;
+        color: #365b8c;
 
-      .info-grid {
-        grid-template-columns: 1fr;
+        border: 1px solid #c5d5ea;
       }
 
+      .message.success {
+        background: #eef7ee;
+        color: #357335;
+
+        border: 1px solid #c4dec4;
+      }
+
+      .message.error {
+        background: #fbeeee;
+        color: #9a3333;
+
+        border: 1px solid #e5baba;
+      }
+
+      /* ========================================
+       検索カード
+       ======================================== */
+
+      .search-card {
+        border: 1px solid #ddd;
+
+        border-radius: 7px;
+
+        padding: 16px;
+
+        margin-bottom: 12px;
+      }
+
+      .section-title {
+        margin: 0 0 10px;
+
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .search-heading-row {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        align-items: center;
+
+        gap: 8px;
+
+        margin-bottom: 10px;
+      }
+
+      .search-heading-row .section-title {
+        margin: 0;
+      }
+
+      .search-heading-row .message {
+        max-width: 70%;
+
+        margin: 0 0 0 auto;
+
+        padding: 5px 8px;
+
+        overflow-wrap: anywhere;
+
+        font-size: 12px;
+      }
 
       .search-area {
-        flex-direction: column;
+        display: flex;
+
+        gap: 8px;
       }
 
+      .search-input {
+        flex: 1;
 
-      .button-row {
-        flex-direction: column;
+        min-width: 0;
+
+        height: 42px;
+
+        padding: 0 10px;
+
+        border: 1px solid #ccc;
+
+        border-radius: 6px;
+
+        background: #fff;
+
+        font-size: 14px;
       }
 
-    }
+      .search-input:focus {
+        outline: none;
 
-  </style>
+        border-color: #777;
+      }
 
-</head>
+      .search-button {
+        height: 42px;
 
+        padding: 0 15px;
 
-<body>
+        border: none;
 
+        border-radius: 6px;
 
-<div class="container">
+        background: #333;
 
+        color: #fff;
 
-  <h1>譜面台管理システム</h1>
+        font-size: 14px;
 
+        cursor: pointer;
 
-  <!-- ============================== -->
-  <!-- メニュー -->
-  <!-- ============================== -->
+        white-space: nowrap;
+      }
 
-  <div class="menu">
+      .search-button:active {
+        opacity: 0.8;
+      }
 
-    <button
-      type="button"
-      onclick="showAddForm()"
-    >
-      ＋ 譜面台を追加
-    </button>
+      /* ========================================
+       譜面台情報
+       ======================================== */
 
+      .stand-card {
+        display: none;
 
-    <button
-      type="button"
-      onclick="goToList()"
-    >
-      譜面台を管理
-    </button>
+        background: #fff;
 
-  </div>
+        border: 1px solid #ddd;
 
+        border-radius: 7px;
 
-  <!-- ============================== -->
-  <!-- メッセージ -->
-  <!-- ============================== -->
+        padding: 16px;
 
-  <div
-    id="message"
-    class="message"
-  ></div>
+        margin-bottom: 12px;
+      }
 
+      .stand-card.show {
+        display: block;
+      }
 
-  <!-- ============================== -->
-  <!-- 検索 -->
-  <!-- ============================== -->
+      .results-card {
+        display: none;
 
-  <div class="card">
+        margin-bottom: 12px;
 
-    <h2>譜面台を検索</h2>
+        padding: 14px;
 
+        background: #fff;
 
-    <div class="search-area">
+        border: 1px solid #ddd;
 
-      <input
-        id="searchId"
-        type="text"
-        placeholder="例：A-001"
-        autocomplete="off"
-      >
+        border-radius: 7px;
+      }
 
+      .results-card.show {
+        display: block;
+      }
 
-      <button
-        type="button"
-        class="primary-button"
-        onclick="searchStand()"
-      >
-        検索
-      </button>
+      .results-info {
+        display: flex;
 
-    </div>
+        justify-content: space-between;
 
+        align-items: center;
 
-    <div
-      id="searchLoading"
-      class="loading"
-    >
-      検索中...
-    </div>
+        margin-bottom: 8px;
 
-  </div>
+        color: #777;
 
+        font-size: 12px;
+      }
 
-  <!-- ============================== -->
-  <!-- 検索結果 -->
-  <!-- ============================== -->
+      .results-wrapper {
+        width: 100%;
 
-  <div
-    id="standInfo"
-    class="card stand-info"
-  >
+        overflow-x: auto;
 
-    <h2>譜面台情報</h2>
+        border: 1px solid #ddd;
 
+        border-radius: 6px;
+      }
 
-    <div class="info-grid">
+      .results-table {
+        width: 100%;
 
+        min-width: 700px;
 
-      <div class="info-item">
+        border-collapse: collapse;
+      }
 
-        <div class="info-label">
-          ID
-        </div>
+      .results-table th,
+      .results-table td {
+        padding: 9px 8px;
 
-        <div
-          id="infoId"
-          class="info-value"
-        ></div>
+        border-bottom: 1px solid #eee;
 
-      </div>
+        text-align: left;
 
+        font-size: 13px;
 
-      <div class="info-item">
+        vertical-align: middle;
+      }
 
-        <div class="info-label">
-          管理パート
-        </div>
+      .results-table th {
+        background: #f7f7f7;
 
-        <div
-          id="infoPart"
-          class="info-value"
-        ></div>
+        color: #555;
 
-      </div>
+        font-weight: 600;
 
+        white-space: nowrap;
+      }
 
-      <div class="info-item">
+      .results-table tbody tr:last-child td {
+        border-bottom: none;
+      }
 
-        <div class="info-label">
-          使用状況
-        </div>
+      .results-table tbody tr:hover {
+        background: #fafafa;
+      }
 
-        <div
-          id="infoUsage"
-          class="info-value"
-        ></div>
+      .result-id-cell {
+        font-weight: 600;
 
-      </div>
+        white-space: nowrap;
+      }
 
+      .result-text-cell {
+        max-width: 220px;
 
-      <div class="info-item">
+        overflow: hidden;
 
-        <div class="info-label">
-          使用可否
-        </div>
+        text-overflow: ellipsis;
 
-        <div
-          id="infoAvailability"
-          class="info-value"
-        ></div>
+        white-space: nowrap;
+      }
 
-      </div>
+      .result-edit-button {
+        padding: 5px 9px;
 
+        border: 1px solid #bbb;
 
-      <div class="info-item">
+        border-radius: 5px;
 
-        <div class="info-label">
-          損傷情報
-        </div>
+        background: #fff;
 
-        <div
-          id="infoDamage"
-          class="info-value"
-        ></div>
+        font-size: 12px;
 
-      </div>
+        white-space: nowrap;
 
+        cursor: pointer;
+      }
 
-      <div class="info-item">
+      .results-empty {
+        display: none;
 
-        <div class="info-label">
-          メモ
-        </div>
+        padding: 30px 16px;
 
-        <div
-          id="infoMemo"
-          class="info-value"
-        ></div>
+        color: #999;
 
-      </div>
+        font-size: 13px;
 
+        text-align: center;
+      }
 
-    </div>
+      .stand-id {
+        margin-bottom: 14px;
 
+        font-size: 22px;
+        font-weight: 600;
+      }
 
-    <div class="button-row">
+      .info-row {
+        display: flex;
 
-      <button
-        type="button"
-        class="secondary-button"
-        onclick="editCurrentStand()"
-      >
-        詳細編集
-      </button>
+        padding: 9px 0;
 
-    </div>
+        border-bottom: 1px solid #eee;
 
-  </div>
+        font-size: 13px;
+      }
 
+      .info-row:last-child {
+        border-bottom: none;
+      }
 
-  <!-- ============================== -->
-  <!-- 譜面台追加 -->
-  <!-- ============================== -->
+      .info-label {
+        width: 90px;
 
-  <div
-    id="addCard"
-    class="card"
-  >
+        flex-shrink: 0;
 
-    <h2>譜面台を追加</h2>
+        color: #777;
+      }
 
+      .info-value {
+        flex: 1;
 
-    <!-- タイプ -->
+        min-width: 0;
 
-    <div class="form-group">
+        white-space: pre-wrap;
 
-      <label for="standType">
-        タイプ
-      </label>
+        word-break: break-word;
+      }
 
+      /* ========================================
+       状態ラベル
+       ======================================== */
 
-      <select
-        id="standType"
-        onchange="onTypeChange()"
-      ></select>
+      .status {
+        display: inline-block;
 
-    </div>
+        padding: 3px 7px;
 
+        border-radius: 4px;
 
-    <!-- 自動生成ID -->
+        font-size: 11px;
+      }
 
-    <div class="form-group">
+      .status-available {
+        background: #eef7ee;
+        color: #357335;
+      }
 
-      <label>
-        新しい譜面台ID
-      </label>
+      .status-warning {
+        background: #fff7e5;
+        color: #8a6500;
+      }
 
+      .status-unavailable {
+        background: #fbeeee;
+        color: #9a3333;
+      }
 
-      <div
-        id="newStandId"
-        class="id-display"
-      >
+      .status-using {
+        background: #eef3fa;
+        color: #365b8c;
+      }
 
-        <span class="id-placeholder">
-          タイプを選択してください
-        </span>
+      .status-free {
+        background: #f2f2f2;
+        color: #666;
+      }
 
-      </div>
+      /* ========================================
+       ボタン
+       ======================================== */
 
-    </div>
+      .button-area {
+        display: flex;
 
+        gap: 8px;
 
-    <!-- 基本情報 -->
+        margin-top: 14px;
+      }
 
-    <div class="form-grid">
+      .primary-button,
+      .secondary-button {
+        flex: 1;
 
+        height: 42px;
 
-      <!-- 管理パート -->
+        border-radius: 6px;
 
-      <div class="form-group">
+        font-size: 13px;
 
-        <label for="managementPart">
-          管理パート
-        </label>
+        cursor: pointer;
+      }
 
+      .primary-button {
+        border: none;
 
-        <select
-          id="managementPart"
-        ></select>
+        background: #333;
 
-      </div>
+        color: #fff;
+      }
 
+      .secondary-button {
+        border: 1px solid #ccc;
 
-      <!-- 使用状況 -->
+        background: #fff;
 
-      <div class="form-group">
+        color: #333;
+      }
 
-        <label for="usageStatus">
-          使用状況
-        </label>
+      .primary-button:active,
+      .secondary-button:active {
+        opacity: 0.8;
+      }
 
+      /* ========================================
+       追加カード
+       ======================================== */
 
-        <select
-          id="usageStatus"
-        ></select>
+      .add-card {
+        display: none;
 
-      </div>
+        background: #fff;
 
+        border: 1px solid #ddd;
 
-      <!-- 使用可否 -->
+        border-radius: 7px;
 
-      <div class="form-group">
+        padding: 16px;
 
-        <label for="availabilityStatus">
-          使用可否
-        </label>
+        margin-bottom: 12px;
+      }
 
+      .add-card.show {
+        display: block;
+      }
 
-        <select
-          id="availabilityStatus"
-        ></select>
+      .form-row {
+        margin-bottom: 15px;
+      }
 
-      </div>
+      .form-row:last-child {
+        margin-bottom: 0;
+      }
 
+      label {
+        display: block;
 
-    </div>
+        margin-bottom: 6px;
 
+        font-size: 13px;
 
-    <!-- 損傷情報 -->
+        font-weight: 600;
 
-    <div class="form-group">
+        color: #444;
+      }
 
-      <label for="damageInfo">
-        損傷情報
-      </label>
+      input,
+      select,
+      textarea {
+        width: 100%;
 
+        border: 1px solid #ccc;
 
-      <textarea
-        id="damageInfo"
-        placeholder="損傷や不具合があれば入力してください"
-      ></textarea>
+        border-radius: 6px;
 
-    </div>
+        background: #fff;
 
+        color: #222;
 
-    <!-- メモ -->
+        font-family: inherit;
 
-    <div class="form-group">
+        font-size: 14px;
+      }
 
-      <label for="memo">
-        メモ
-      </label>
+      input,
+      select {
+        height: 40px;
 
+        padding: 0 10px;
+      }
 
-      <textarea
-        id="memo"
-        placeholder="必要なメモを入力してください"
-      ></textarea>
+      textarea {
+        min-height: 90px;
 
-    </div>
+        padding: 9px 10px;
 
+        resize: vertical;
 
-    <div class="button-row">
+        line-height: 1.5;
+      }
 
-      <button
-        type="button"
-        class="primary-button"
-        onclick="registerStand()"
-      >
-        登録
-      </button>
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
 
+        border-color: #777;
+      }
 
-      <button
-        type="button"
-        class="secondary-button"
-        onclick="clearAddForm()"
-      >
-        クリア
-      </button>
+      /* ========================================
+       ID表示
+       ======================================== */
 
-    </div>
+      .id-display {
+        display: flex;
 
+        align-items: center;
 
-    <div
-      id="addLoading"
-      class="loading"
-    >
-      登録中...
-    </div>
+        min-height: 40px;
 
-  </div>
+        padding: 0 10px;
 
+        background: #f3f3f3;
 
-</div>
+        border: 1px solid #ddd;
 
+        border-radius: 6px;
 
-<script>
+        color: #555;
 
-/**
- * ========================================
- * 初期化
- * ========================================
- */
+        font-size: 14px;
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+        font-weight: 600;
+      }
 
-    initializePage();
+      .id-note {
+        margin-top: 5px;
 
-  }
-);
+        color: #999;
 
+        font-size: 11px;
+      }
 
-/**
- * ページ初期化
- */
-function initializePage() {
+      /* ========================================
+       ローディング
+       ======================================== */
 
-  /**
-   * config.jsから
-   * プルダウンを生成
-   */
+      .loading {
+        display: none;
 
-  setupStandTypeSelect(
-    "standType",
-    "タイプを選択"
-  );
+        padding: 30px 20px;
 
+        text-align: center;
 
-  setupManagementPartSelect(
-    "managementPart",
-    "管理パートを選択"
-  );
+        color: #888;
 
+        font-size: 13px;
+      }
 
-  setupUsageStatusSelect(
-    "usageStatus",
-    "使用状況を選択"
-  );
+      .loading.show {
+        display: block;
+      }
 
+      /* ========================================
+       スマホ
+       ======================================== */
 
-  setupAvailabilitySelect(
-    "availabilityStatus",
-    "使用可否を選択"
-  );
-
-
-  /**
-   * URLパラメータを確認
-   *
-   * ?id=A-001
-   */
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-
-  const id =
-    params.get("id");
-
-
-  if (id) {
-
-    document
-      .getElementById("searchId")
-      .value = id;
-
-
-    searchStand();
-
-  }
-
-}
-
-
-/**
- * ========================================
- * メニュー
- * ========================================
- */
-
-
-/**
- * 譜面台管理画面へ
- */
-function goToList() {
-
-  window.location.href =
-    "list.html";
-
-}
-
-
-/**
- * 追加フォームを表示
- */
-function showAddForm() {
-
-  const card =
-    document.getElementById(
-      "addCard"
-    );
-
-
-  card.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
-
-}
-
-
-/**
- * ========================================
- * 検索
- * ========================================
- */
-
-
-/**
- * 譜面台検索
- */
-async function searchStand() {
-
-  const input =
-    document.getElementById(
-      "searchId"
-    );
-
-
-  const id =
-    input.value.trim();
-
-
-  if (!id) {
-
-    showMessage(
-      "譜面台IDを入力してください",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  const loading =
-    document.getElementById(
-      "searchLoading"
-    );
-
-
-  loading.classList.add(
-    "visible"
-  );
-
-
-  hideMessage();
-
-
-  try {
-
-    const stand =
-      await getStandById(id);
-
-
-    if (!stand) {
-
-      throw new Error(
-        "譜面台が見つかりません"
-      );
-
-    }
-
-
-    displayStand(
-      stand
-    );
-
-
-  } catch (error) {
-
-    hideStandInfo();
-
-
-    showMessage(
-      error.message ||
-      "検索に失敗しました",
-      "error"
-    );
-
-  } finally {
-
-    loading.classList.remove(
-      "visible"
-    );
-
-  }
-
-}
-
-
-/**
- * Enterキーでも検索
- */
-document.addEventListener(
-  "keydown",
-  event => {
-
-    if (
-      event.key === "Enter" &&
-      document.activeElement.id ===
-        "searchId"
-    ) {
-
-      searchStand();
-
-    }
-
-  }
-);
-
-
-/**
- * 検索結果表示
- */
-function displayStand(
-  stand
-) {
-
-  document.getElementById(
-    "infoId"
-  ).textContent =
-    stand.ID || "";
-
-
-  document.getElementById(
-    "infoPart"
-  ).textContent =
-    stand.管理パート || "";
-
-
-  document.getElementById(
-    "infoUsage"
-  ).textContent =
-    stand.使用状況 || "";
-
-
-  document.getElementById(
-    "infoAvailability"
-  ).textContent =
-    stand.使用可否 || "";
-
-
-  document.getElementById(
-    "infoDamage"
-  ).textContent =
-    stand.損傷情報 || "";
-
-
-  document.getElementById(
-    "infoMemo"
-  ).textContent =
-    stand.メモ || "";
-
-
-  document
-    .getElementById("standInfo")
-    .classList.add("visible");
-
-
-  /**
-   * 現在表示しているIDを保存
-   */
-  currentStandId =
-    stand.ID || "";
-
-}
-
-
-/**
- * 検索結果を非表示
- */
-function hideStandInfo() {
-
-  document
-    .getElementById("standInfo")
-    .classList.remove(
-      "visible"
-    );
-
-}
-
-
-/**
- * ========================================
- * 詳細編集
- * ========================================
- */
-
-
-/**
- * 現在表示中の譜面台を編集
- */
-function editCurrentStand() {
-
-  if (!currentStandId) {
-
-    showMessage(
-      "編集する譜面台がありません",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  window.location.href =
-    "edit.html?id=" +
-    encodeURIComponent(
-      currentStandId
-    );
-
-}
-
-
-/**
- * 現在表示中の譜面台ID
- */
-let currentStandId = "";
-
-
-/**
- * ========================================
- * 追加
- * ========================================
- */
-
-
-/**
- * タイプ変更時
- */
-async function onTypeChange() {
-
-  const type =
-    document.getElementById(
-      "standType"
-    ).value;
-
-
-  const idDisplay =
-    document.getElementById(
-      "newStandId"
-    );
-
-
-  /**
-   * タイプ未選択
-   */
-  if (!type) {
-
-    idDisplay.innerHTML =
-      '<span class="id-placeholder">' +
-      'タイプを選択してください' +
-      '</span>';
-
-    return;
-
-  }
-
-
-  idDisplay.textContent =
-    "取得中...";
-
-
-  try {
-
-    /**
-     * 次のIDを取得
-     *
-     * 例：
-     * A-001
-     * A-002
-     * A-003
-     */
-
-    const id =
-      await getNextId(type);
-
-
-    idDisplay.textContent =
-      id;
-
-  } catch (error) {
-
-    idDisplay.innerHTML =
-      '<span class="id-placeholder">' +
-      'IDを取得できませんでした' +
-      '</span>';
-
-
-    showMessage(
-      error.message ||
-      "次のIDの取得に失敗しました",
-      "error"
-    );
-
-  }
-
-}
-
-
-/**
- * 譜面台登録
- */
-async function registerStand() {
-
-  const type =
-    document.getElementById(
-      "standType"
-    ).value;
-
-
-  const managementPart =
-    document.getElementById(
-      "managementPart"
-    ).value;
-
-
-  const usageStatus =
-    document.getElementById(
-      "usageStatus"
-    ).value;
-
-
-  const availabilityStatus =
-    document.getElementById(
-      "availabilityStatus"
-    ).value;
-
-
-  const damageInfo =
-    document.getElementById(
-      "damageInfo"
-    ).value.trim();
-
-
-  const memo =
-    document.getElementById(
-      "memo"
-    ).value.trim();
-
-
-  /**
-   * 必須チェック
-   */
-
-  if (!type) {
-
-    showMessage(
-      "タイプを選択してください",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!managementPart) {
-
-    showMessage(
-      "管理パートを選択してください",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!usageStatus) {
-
-    showMessage(
-      "使用状況を選択してください",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  if (!availabilityStatus) {
-
-    showMessage(
-      "使用可否を選択してください",
-      "error"
-    );
-
-    return;
-
-  }
-
-
-  const loading =
-    document.getElementById(
-      "addLoading"
-    );
-
-
-  loading.classList.add(
-    "visible"
-  );
-
-
-  hideMessage();
-
-
-  try {
-
-    /**
-     * サーバー側で
-     * 実際のIDを生成する
-     */
-
-    const stand =
-      await addStand(
-        type,
-        {
-
-          管理パート:
-            managementPart,
-
-          使用状況:
-            usageStatus,
-
-          使用可否:
-            availabilityStatus,
-
-          損傷情報:
-            damageInfo,
-
-          メモ:
-            memo
-
+      @media (max-width: 600px) {
+        .container {
+          padding: 12px 8px 24px;
         }
-      );
 
+        .page-title {
+          font-size: 18px;
+        }
 
-    /**
-     * 登録成功
-     */
+        .last-updated {
+          font-size: 9px;
+        }
 
-    showMessage(
-      "譜面台を登録しました",
-      "success"
-    );
+        .refresh-button {
+          padding: 5px 7px;
 
+          font-size: 11px;
+        }
 
-    /**
-     * 登録した譜面台を表示
-     */
+        .search-card,
+        .stand-card,
+        .add-card {
+          padding: 13px;
+        }
 
-    if (stand) {
+        .info-label {
+          width: 80px;
+        }
+      }
+    </style>
+  </head>
 
-      displayStand(
-        stand
-      );
+  <body>
+    <!-- ======================================
+       ヘッダー
+       ======================================= -->
 
-    }
+    <header class="header">
+      <div class="header-title">譜面台管理システム</div>
 
+      <div class="header-info">
+        <div id="lastUpdated" class="last-updated">最終更新：未取得</div>
 
-    /**
-     * フォームをクリア
-     *
-     * 登録したIDは表示結果として
-     * 残しておく。
-     */
+        <button
+          id="refreshButton"
+          class="refresh-button"
+          type="button"
+          onclick="handleRefresh()"
+        >
+          ↻ 更新
+        </button>
+      </div>
+    </header>
 
-    clearAddForm();
+    <!-- ======================================
+       メイン
+       ======================================= -->
 
+    <main class="container">
+      <!-- ローディング -->
 
-  } catch (error) {
+      <div id="loading" class="loading">読み込み中...</div>
 
-    showMessage(
-      error.message ||
-      "登録に失敗しました",
-      "error"
-    );
+      <!-- ====================================
+         検索
+         ===================================== -->
 
-  } finally {
+      <section class="search-card">
+        <div class="search-heading-row">
+          <h2 class="section-title">譜面台を検索</h2>
 
-    loading.classList.remove(
-      "visible"
-    );
+          <div id="message" class="message"></div>
+        </div>
 
-  }
+        <div class="search-area">
+          <input
+            id="searchInput"
+            class="search-input"
+            type="search"
+            placeholder="ID・タイプ・使用状況などで検索"
+            autocomplete="off"
+          />
 
-}
+          <button class="search-button" type="button" onclick="handleSearch()">
+            検索
+          </button>
+        </div>
+      </section>
 
+      <!-- ====================================
+         メニュー
+         ===================================== -->
 
-/**
- * 追加フォームをクリア
- */
-function clearAddForm() {
+      <div class="button-area">
+        <button class="primary-button" type="button" onclick="showAddForm()">
+          ＋ 譜面台を追加
+        </button>
 
-  document.getElementById(
-    "standType"
-  ).value = "";
+        <button class="secondary-button" type="button" onclick="goToList()">
+          譜面台を管理
+        </button>
+      </div>
 
+      <!-- ====================================
+         譜面台情報
+         ===================================== -->
 
-  document.getElementById(
-    "managementPart"
-  ).value = "";
+      <section id="standCard" class="stand-card">
+        <div id="standId" class="stand-id"></div>
 
+        <div class="info-row">
+          <div class="info-label">管理パート</div>
 
-  document.getElementById(
-    "usageStatus"
-  ).value = "";
+          <div id="managementPartValue" class="info-value"></div>
+        </div>
 
+        <div class="info-row">
+          <div class="info-label">使用状況</div>
 
-  document.getElementById(
-    "availabilityStatus"
-  ).value = "";
+          <div id="usageStatusValue" class="info-value"></div>
+        </div>
 
+        <div class="info-row">
+          <div class="info-label">使用可否</div>
 
-  document.getElementById(
-    "damageInfo"
-  ).value = "";
+          <div id="availabilityValue" class="info-value"></div>
+        </div>
 
+        <div class="info-row">
+          <div class="info-label">損傷情報</div>
 
-  document.getElementById(
-    "memo"
-  ).value = "";
+          <div id="damageInfoValue" class="info-value"></div>
+        </div>
 
+        <div class="info-row">
+          <div class="info-label">メモ</div>
 
-  document.getElementById(
-    "newStandId"
-  ).innerHTML =
-    '<span class="id-placeholder">' +
-    'タイプを選択してください' +
-    '</span>';
+          <div id="memoValue" class="info-value"></div>
+        </div>
 
-}
+        <div class="button-area">
+          <button
+            class="primary-button"
+            type="button"
+            onclick="editCurrentStand()"
+          >
+            編集
+          </button>
 
+          <button
+            class="secondary-button"
+            type="button"
+            onclick="hideStandInfo()"
+          >
+            閉じる
+          </button>
+        </div>
+      </section>
 
-/**
- * ========================================
- * メッセージ
- * ========================================
- */
+      <section id="searchResults" class="results-card">
+        <h2 class="section-title">検索結果</h2>
 
+        <div class="results-info">
+          <span id="resultsCount">0件</span>
+          <span>譜面台一覧</span>
+        </div>
 
-/**
- * メッセージ表示
- */
-function showMessage(
-  message,
-  type
-) {
+        <div class="results-wrapper">
+          <table id="searchResultsTable" class="results-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>管理パート</th>
+                <th>使用状況</th>
+                <th>使用可否</th>
+                <th>損傷情報</th>
+                <th>メモ</th>
+                <th>操作</th>
+              </tr>
+            </thead>
 
-  const element =
-    document.getElementById(
-      "message"
-    );
+            <tbody id="searchResultsBody"></tbody>
+          </table>
 
+          <div id="searchResultsEmpty" class="results-empty">
+            一致する譜面台データがありません。
+          </div>
+        </div>
+      </section>
 
-  element.textContent =
-    message;
+      <!-- ====================================
+         追加
+         ===================================== -->
 
+      <section id="addCard" class="add-card">
+        <h2 class="section-title">譜面台を追加</h2>
 
-  element.className =
-    "message " +
-    type;
+        <!-- タイプ -->
 
-}
+        <div class="form-row">
+          <label for="standType"> タイプ </label>
 
+          <select id="standType" onchange="handleTypeChange()" required>
+            <option value="">タイプを選択</option>
+          </select>
+        </div>
 
-/**
- * メッセージ非表示
- */
-function hideMessage() {
+        <!-- ID -->
 
-  const element =
-    document.getElementById(
-      "message"
-    );
+        <div class="form-row">
+          <label> 譜面台ID </label>
 
+          <div id="newStandId" class="id-display">タイプを選択してください</div>
 
-  element.textContent =
-    "";
+          <div class="id-note">IDは自動生成されます。</div>
+        </div>
 
+        <!-- 管理パート -->
 
-  element.className =
-    "message";
+        <div class="form-row">
+          <label for="addManagementPart"> 管理パート </label>
 
-}
+          <select id="addManagementPart" required>
+            <option value="">管理パートを選択</option>
+          </select>
+        </div>
 
-</script>
+        <!-- 使用状況 -->
 
+        <div class="form-row">
+          <label for="addUsageStatus"> 使用状況 </label>
 
-</body>
+          <select id="addUsageStatus" required>
+            <option value="">使用状況を選択</option>
+          </select>
+        </div>
 
+        <!-- 使用可否 -->
+
+        <div class="form-row">
+          <label for="addAvailability"> 使用可否 </label>
+
+          <select id="addAvailability" required>
+            <option value="">使用可否を選択</option>
+          </select>
+        </div>
+
+        <!-- 損傷情報 -->
+
+        <div class="form-row">
+          <label for="addDamageInfo"> 損傷情報 </label>
+
+          <textarea
+            id="addDamageInfo"
+            placeholder="損傷や不具合があれば入力してください"
+          ></textarea>
+        </div>
+
+        <!-- メモ -->
+
+        <div class="form-row">
+          <label for="addMemo"> メモ </label>
+
+          <textarea
+            id="addMemo"
+            placeholder="必要なメモがあれば入力してください"
+          ></textarea>
+        </div>
+
+        <!-- ボタン -->
+
+        <div class="button-area">
+          <button
+            id="registerButton"
+            class="primary-button"
+            type="button"
+            onclick="handleRegister()"
+          >
+            登録する
+          </button>
+
+          <button
+            class="secondary-button"
+            type="button"
+            onclick="hideAddForm()"
+          >
+            閉じる
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================================
+       JavaScript
+       ======================================= -->
+
+    <script src="config.js"></script>
+
+    <script src="api.js"></script>
+
+    <script src="dataStore.js"></script>
+
+    <script>
+      /**
+       * ========================================
+       * 現在表示している譜面台
+       * ========================================
+       */
+
+      let currentStand = null;
+
+      /**
+       * ========================================
+       * 初期化
+       * ========================================
+       */
+
+      document.addEventListener("DOMContentLoaded", initializePage);
+
+      async function initializePage() {
+        updateLastUpdatedText();
+
+        /**
+         * URLパラメータ
+         *
+         * 例：
+         * index.html?id=A-001
+         */
+
+        const params = new URLSearchParams(window.location.search);
+
+        const id = params.get("id");
+
+        try {
+          /**
+           * INDEX_CACHE_HOURS は
+           * config.jsで
+           *
+           * 24 * 7
+           *
+           * に設定する。
+           *
+           * つまり7日間は
+           * 自動的な全データ更新をしない。
+           */
+          await getStandData(INDEX_CACHE_HOURS);
+
+          updateLastUpdatedText();
+
+          /**
+           * ID指定がある場合
+           *
+           * → ローカルデータから検索
+           */
+          if (id) {
+            const input = document.getElementById("searchInput");
+
+            input.value = id;
+
+            searchStand(id);
+          }
+        } catch (error) {
+          console.error("初期化エラー:", error);
+
+          showMessage(error.message || "データの取得に失敗しました。", "error");
+        }
+      }
+
+      /**
+       * ========================================
+       * 検索
+       * ========================================
+       */
+
+      function handleSearch() {
+        const input = document.getElementById("searchInput");
+
+        const id = input.value.trim().toUpperCase();
+
+        searchStand(id);
+      }
+
+      function searchStand(id) {
+        const query = String(id || "")
+          .trim()
+          .toUpperCase();
+
+        if (!query) {
+          currentStand = null;
+
+          hideStandInfo();
+
+          hideSearchResults();
+
+          hideMessage();
+
+          return;
+        }
+
+        /**
+         * GASへ通信しない。
+         *
+         * localStorageから検索。
+         */
+        const exactStand = findStandById(query);
+
+        if (exactStand) {
+          currentStand = exactStand;
+
+          hideSearchResults();
+
+          displayStand(exactStand);
+
+          hideMessage();
+
+          return;
+        }
+
+        currentStand = null;
+
+        hideStandInfo();
+
+        const data = loadStoredStandData() || [];
+
+        const isTypeSearch = STAND_TYPES.some(
+          (type) => String(type).trim().toUpperCase() === query,
+        );
+
+        const matchingStands = data.filter((stand) => {
+          if (isTypeSearch) {
+            return String(stand.ID || "")
+              .trim()
+              .toUpperCase()
+              .startsWith(query + "-");
+          }
+
+          return [
+            stand.ID,
+            stand["管理パート"],
+            stand["使用状況"],
+            stand["使用可否"],
+            stand["損傷情報"],
+            stand["メモ"],
+          ].some((value) =>
+            String(value || "")
+              .trim()
+              .toUpperCase()
+              .includes(query),
+          );
+        });
+
+        renderSearchResults(matchingStands);
+
+        if (matchingStands.length > 0) {
+          showMessage("「" + query + "」の検索結果を表示しています。", "info");
+        } else {
+          showMessage(
+            "「" + query + "」に一致する譜面台が見つかりませんでした。",
+            "error",
+          );
+        }
+      }
+
+      function renderSearchResults(stands) {
+        const section = document.getElementById("searchResults");
+
+        const tbody = document.getElementById("searchResultsBody");
+
+        const table = document.getElementById("searchResultsTable");
+
+        const empty = document.getElementById("searchResultsEmpty");
+
+        tbody.innerHTML = "";
+
+        document.getElementById("resultsCount").textContent =
+          stands.length + "件";
+
+        if (stands.length === 0) {
+          table.style.display = "none";
+
+          empty.style.display = "block";
+        } else {
+          table.style.display = "table";
+
+          empty.style.display = "none";
+
+          stands.forEach((stand) => {
+            tbody.appendChild(createSearchResultRow(stand));
+          });
+        }
+
+        section.classList.add("show");
+      }
+
+      function createSearchResultRow(stand) {
+        const row = document.createElement("tr");
+
+        const idCell = document.createElement("td");
+
+        idCell.className = "result-id-cell";
+
+        idCell.textContent = stand.ID || "";
+
+        const partCell = document.createElement("td");
+
+        partCell.textContent = stand["管理パート"] || "";
+
+        const usageCell = document.createElement("td");
+
+        usageCell.appendChild(createStatusLabel(stand["使用状況"], "usage"));
+
+        const availabilityCell = document.createElement("td");
+
+        availabilityCell.appendChild(
+          createStatusLabel(stand["使用可否"], "availability"),
+        );
+
+        const damageCell = document.createElement("td");
+
+        damageCell.className = "result-text-cell";
+
+        damageCell.textContent = stand["損傷情報"] || "";
+
+        const memoCell = document.createElement("td");
+
+        memoCell.className = "result-text-cell";
+
+        memoCell.textContent = stand["メモ"] || "";
+
+        const actionCell = document.createElement("td");
+
+        const editButton = document.createElement("button");
+
+        editButton.type = "button";
+
+        editButton.className = "result-edit-button";
+
+        editButton.textContent = "編集";
+
+        editButton.addEventListener("click", () => {
+          currentStand = stand;
+
+          editCurrentStand();
+        });
+
+        actionCell.appendChild(editButton);
+
+        [
+          idCell,
+          partCell,
+          usageCell,
+          availabilityCell,
+          damageCell,
+          memoCell,
+          actionCell,
+        ].forEach((cell) => row.appendChild(cell));
+
+        return row;
+      }
+
+      function hideSearchResults() {
+        document.getElementById("searchResults").classList.remove("show");
+      }
+
+      function showMessage(text, type = "info") {
+        const element = document.getElementById("message");
+
+        element.textContent = text;
+
+        element.className = "message show " + type;
+      }
+
+      function hideMessage() {
+        const element = document.getElementById("message");
+
+        element.className = "message";
+
+        element.textContent = "";
+      }
+
+      /**
+       * ========================================
+       * 譜面台表示
+       * ========================================
+       */
+
+      function displayStand(stand) {
+        const card = document.getElementById("standCard");
+
+        document.getElementById("standId").textContent = stand.ID || "";
+
+        document.getElementById("managementPartValue").textContent =
+          stand["管理パート"] || "";
+
+        document.getElementById("usageStatusValue").innerHTML = "";
+
+        document
+          .getElementById("usageStatusValue")
+          .appendChild(createStatusLabel(stand["使用状況"], "usage"));
+
+        document.getElementById("availabilityValue").innerHTML = "";
+
+        document
+          .getElementById("availabilityValue")
+          .appendChild(createStatusLabel(stand["使用可否"], "availability"));
+
+        document.getElementById("damageInfoValue").textContent =
+          stand["損傷情報"] || "";
+
+        document.getElementById("memoValue").textContent = stand["メモ"] || "";
+
+        card.classList.add("show");
+      }
+
+      /**
+       * ========================================
+       * 状態ラベル
+       * ========================================
+       */
+
+      function createStatusLabel(value, type) {
+        const span = document.createElement("span");
+
+        span.className = "status";
+
+        const text = value || "";
+
+        span.textContent = text;
+
+        if (type === "availability") {
+          if (text === "可能") {
+            span.classList.add("status-available");
+          } else if (text === "注意") {
+            span.classList.add("status-warning");
+          } else if (text === "不可") {
+            span.classList.add("status-unavailable");
+          }
+        }
+
+        if (type === "usage") {
+          if (text === "使用中") {
+            span.classList.add("status-using");
+          } else if (text === "空き") {
+            span.classList.add("status-free");
+          }
+        }
+
+        return span;
+      }
+
+      /**
+       * ========================================
+       * 譜面台情報を閉じる
+       * ========================================
+       */
+
+      function hideStandInfo() {
+        currentStand = null;
+
+        document.getElementById("standCard").classList.remove("show");
+      }
+
+      /**
+       * ========================================
+       * 編集
+       * ========================================
+       */
+
+      function editCurrentStand() {
+        if (!currentStand || !currentStand.ID) {
+          return;
+        }
+
+        window.location.href =
+          "edit.html?id=" + encodeURIComponent(currentStand.ID);
+      }
+
+      /**
+       * ========================================
+       * 追加フォーム表示
+       * ========================================
+       */
+
+      function showAddForm() {
+        const card = document.getElementById("addCard");
+
+        /**
+         * プルダウン設定
+         */
+
+        setupStandTypeSelect("standType", "タイプを選択");
+
+        setupManagementPartSelect("addManagementPart", "管理パートを選択");
+
+        setupUsageStatusSelect("addUsageStatus", "使用状況を選択");
+
+        setupAvailabilitySelect("addAvailability", "使用可否を選択");
+
+        card.classList.add("show");
+
+        /**
+         * 追加フォームまで
+         * スクロール
+         */
+
+        card.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+
+      /**
+       * ========================================
+       * 追加フォームを閉じる
+       * ========================================
+       */
+
+      function hideAddForm() {
+        document.getElementById("addCard").classList.remove("show");
+      }
+
+      /**
+       * ========================================
+       * タイプ変更
+       * ========================================
+       */
+
+      async function handleTypeChange() {
+        const type = document.getElementById("standType").value;
+
+        const idElement = document.getElementById("newStandId");
+
+        if (!type) {
+          idElement.textContent = "タイプを選択してください";
+
+          return;
+        }
+
+        idElement.textContent = "IDを取得中...";
+
+        try {
+          /**
+           * 次のID取得はGASへ通信。
+           *
+           * ここは新規登録用の
+           * ID生成なので、
+           * キャッシュは使わない。
+           */
+          const nextId = await getNextId(type);
+
+          idElement.textContent = nextId;
+        } catch (error) {
+          console.error("ID取得エラー:", error);
+
+          idElement.textContent = "ID取得に失敗しました";
+
+          showMessage(error.message || "IDの取得に失敗しました。", "error");
+        }
+      }
+
+      /**
+       * ========================================
+       * 登録
+       * ========================================
+       */
+
+      async function handleRegister() {
+        const registerButton = document.getElementById("registerButton");
+
+        registerButton.disabled = true;
+
+        registerButton.textContent = "登録中...";
+
+        hideMessage();
+
+        try {
+          const type = document.getElementById("standType").value;
+
+          const id = document.getElementById("newStandId").textContent;
+
+          if (!type) {
+            throw new Error("タイプを選択してください。");
+          }
+
+          if (!id || id.includes("取得") || id.includes("選択")) {
+            throw new Error("譜面台IDを取得してください。");
+          }
+
+          const data = {
+            ID: id,
+
+            管理パート: document.getElementById("addManagementPart").value,
+
+            使用状況: document.getElementById("addUsageStatus").value,
+
+            使用可否: document.getElementById("addAvailability").value,
+
+            損傷情報: document.getElementById("addDamageInfo").value,
+
+            メモ: document.getElementById("addMemo").value,
+          };
+
+          if (!data["管理パート"]) {
+            throw new Error("管理パートを選択してください。");
+          }
+
+          if (!data["使用状況"]) {
+            throw new Error("使用状況を選択してください。");
+          }
+
+          if (!data["使用可否"]) {
+            throw new Error("使用可否を選択してください。");
+          }
+
+          /**
+           * ====================================
+           * GASへ登録
+           * ====================================
+           */
+
+          const newStand = await addStand(type, data);
+
+          /**
+           * ====================================
+           * ローカルデータ更新
+           * ====================================
+           */
+
+          addStoredStand(newStand);
+
+          updateLastUpdatedText();
+
+          /**
+           * 登録した譜面台を表示
+           */
+
+          currentStand = newStand;
+
+          displayStand(newStand);
+
+          /**
+           * 追加フォームを閉じる
+           */
+
+          hideAddForm();
+
+          /**
+           * フォームを初期化
+           */
+
+          clearAddForm();
+
+          showMessage("譜面台 " + newStand.ID + " を登録しました。", "success");
+        } catch (error) {
+          console.error("登録エラー:", error);
+
+          showMessage(error.message || "譜面台の登録に失敗しました。", "error");
+        } finally {
+          registerButton.disabled = false;
+
+          registerButton.textContent = "登録する";
+        }
+      }
+
+      /**
+       * ========================================
+       * 追加フォーム初期化
+       * ========================================
+       */
+
+      function clearAddForm() {
+        document.getElementById("standType").value = "";
+
+        document.getElementById("newStandId").textContent =
+          "タイプを選択してください";
+
+        document.getElementById("addManagementPart").value = "";
+
+        document.getElementById("addUsageStatus").value = "";
+
+        document.getElementById("addAvailability").value = "";
+
+        document.getElementById("addDamageInfo").value = "";
+
+        document.getElementById("addMemo").value = "";
+      }
+
+      /**
+       * ========================================
+       * 強制更新
+       * ========================================
+       */
+
+      async function handleRefresh() {
+        const button = document.getElementById("refreshButton");
+
+        button.disabled = true;
+
+        button.textContent = "更新中...";
+
+        hideMessage();
+
+        try {
+          /**
+           * キャッシュを無視して
+           * GASから最新一覧を取得。
+           */
+          await refreshStandData();
+
+          updateLastUpdatedText();
+
+          /**
+           * 現在表示中のIDがあれば
+           * 最新データで再表示。
+           */
+
+          if (currentStand) {
+            const updated = findStandById(currentStand.ID);
+
+            if (updated) {
+              currentStand = updated;
+
+              displayStand(updated);
+            }
+          }
+
+          showMessage("最新の情報に更新しました。", "info");
+        } catch (error) {
+          console.error("更新エラー:", error);
+
+          showMessage(error.message || "更新に失敗しました。", "error");
+        } finally {
+          button.disabled = false;
+
+          button.textContent = "↻ 更新";
+        }
+      }
+
+      /**
+       * ========================================
+       * 最終更新日時
+       * ========================================
+       */
+
+      function updateLastUpdatedText() {
+        const element = document.getElementById("lastUpdated");
+
+        element.textContent = "最終更新：" + getLastUpdatedText();
+      }
+
+      /**
+       * ========================================
+       * メイン画面上の
+       * Enterキー検索
+       * ========================================
+       */
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const input = document.getElementById("searchInput");
+
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            handleSearch();
+          }
+        });
+      });
+
+      /**
+       * ========================================
+       * 一覧画面へ
+       * ========================================
+       */
+
+      function goToList() {
+        window.location.href = "list.html";
+      }
+    </script>
+  </body>
 </html>

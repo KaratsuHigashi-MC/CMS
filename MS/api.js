@@ -5,70 +5,45 @@
  * ========================================
  */
 
-
 /**
  * GAS APIへリクエスト
  */
 async function api(request) {
-
   const data = {
     ...request,
-    sheet: SHEET_NAME
+    sheet: SHEET_NAME,
   };
-
 
   let response;
 
-
   try {
+    response = await fetch(API_URL, {
+      method: "POST",
 
-    response = await fetch(
-      API_URL,
-      {
-        method: "POST",
+      /*
+       * application/json にすると
+       * GAS WebアプリへのOPTIONS
+       * preflightが発生するため、
+       * text/plainで送信する。
+       */
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
 
-        /*
-         * application/json にすると
-         * GAS WebアプリへのOPTIONS
-         * preflightが発生するため、
-         * text/plainで送信する。
-         */
-        headers: {
-          "Content-Type":
-            "text/plain;charset=utf-8"
-        },
-
-        body:
-          JSON.stringify(data)
-      }
-    );
-
+      body: JSON.stringify(data),
+    });
   } catch (error) {
+    console.error("GAS通信エラー:", error);
 
-    console.error(
-      "GAS通信エラー:",
-      error
-    );
-
-    throw new Error(
-      "GASとの通信に失敗しました"
-    );
-
+    throw new Error("GASとの通信に失敗しました");
   }
-
 
   /**
    * HTTPエラー
    */
   if (!response.ok) {
-
-    throw new Error(
-      "サーバーエラー: HTTP " +
-      response.status
-    );
-
+    throw new Error("サーバーエラー: HTTP " + response.status);
   }
-
 
   /**
    * JSON解析
@@ -76,41 +51,22 @@ async function api(request) {
   let result;
 
   try {
-
-    result =
-      await response.json();
-
+    result = await response.json();
   } catch (error) {
+    console.error("JSON解析エラー:", error);
 
-    console.error(
-      "JSON解析エラー:",
-      error
-    );
-
-    throw new Error(
-      "サーバーから正しいデータを受信できませんでした"
-    );
-
+    throw new Error("サーバーから正しいデータを受信できませんでした");
   }
-
 
   /**
    * GAS側エラー
    */
   if (!result.success) {
-
-    throw new Error(
-      result.error ||
-      "Unknown error"
-    );
-
+    throw new Error(result.error || "Unknown error");
   }
 
-
   return result;
-
 }
-
 
 /**
  * ========================================
@@ -118,59 +74,41 @@ async function api(request) {
  * ========================================
  */
 
-
 /**
  * API通信テスト
  */
 async function testApi() {
-
   return await api({
-    cmd: "test"
+    cmd: "test",
   });
-
 }
-
 
 /**
  * 譜面台一覧取得
  */
 async function getStandList() {
-
-  const result =
-    await api({
-      cmd: "list"
-    });
+  const result = await api({
+    cmd: "list",
+  });
 
   return result.data || [];
-
 }
-
 
 /**
  * 譜面台1件取得
  */
 async function getStandById(id) {
-
   if (!id) {
-
-    throw new Error(
-      "譜面台IDが指定されていません"
-    );
-
+    throw new Error("譜面台IDが指定されていません");
   }
 
-
-  const result =
-    await api({
-      cmd: "getById",
-      id: id
-    });
-
+  const result = await api({
+    cmd: "getById",
+    id: id,
+  });
 
   return result.data;
-
 }
-
 
 /**
  * 譜面台追加
@@ -178,90 +116,50 @@ async function getStandById(id) {
  * @param {string} type
  * @param {object} data
  */
-async function addStand(
-  type,
-  data
-) {
-
+async function addStand(type, data) {
   if (!type) {
-
-    throw new Error(
-      "タイプが指定されていません"
-    );
-
+    throw new Error("タイプが指定されていません");
   }
-
 
   if (!data) {
-
-    throw new Error(
-      "譜面台データがありません"
-    );
-
+    throw new Error("譜面台データがありません");
   }
 
+  const result = await api({
+    cmd: "add",
 
-  const result =
-    await api({
+    type: type,
 
-      cmd: "add",
-
-      type: type,
-
-      data: data
-
-    });
-
+    data: data,
+  });
 
   return result.data;
-
 }
-
 
 /**
  * 譜面台更新
  *
  * IDは変更しない。
  */
-async function updateStand(
-  id,
-  data
-) {
-
+async function updateStand(id, data) {
   if (!id) {
-
-    throw new Error(
-      "譜面台IDが指定されていません"
-    );
-
+    throw new Error("譜面台IDが指定されていません");
   }
-
 
   if (!data) {
-
-    throw new Error(
-      "更新データがありません"
-    );
-
+    throw new Error("更新データがありません");
   }
 
+  const result = await api({
+    cmd: "update",
 
-  const result =
-    await api({
+    id: id,
 
-      cmd: "update",
-
-      id: id,
-
-      data: data
-
-    });
-
+    data: data,
+  });
 
   return result.data;
-
 }
-
 
 /**
  * 次のIDを取得
@@ -271,26 +169,15 @@ async function updateStand(
  * GAS側で行う。
  */
 async function getNextId(type) {
-
   if (!type) {
-
-    throw new Error(
-      "タイプが指定されていません"
-    );
-
+    throw new Error("タイプが指定されていません");
   }
 
+  const result = await api({
+    cmd: "nextId",
 
-  const result =
-    await api({
-
-      cmd: "nextId",
-
-      type: type
-
-    });
-
+    type: type,
+  });
 
   return result.data.id;
-
 }

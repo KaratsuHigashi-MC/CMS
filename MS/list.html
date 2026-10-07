@@ -1,1575 +1,1002 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
 
-<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <meta charset="UTF-8">
+    <title>譜面台管理システム - データ一覧</title>
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+    <style>
+      * {
+        box-sizing: border-box;
+      }
 
-  <title>譜面台管理</title>
+      body {
+        margin: 0;
+        padding: 0;
 
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  <style>
+        background: #f5f6f7;
+        color: #222;
+      }
 
-    * {
-      box-sizing: border-box;
-    }
-
-
-    body {
-      margin: 0;
-      padding: 0;
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      background: #f5f6f7;
-      color: #222;
-    }
-
-
-    /* ========================================
+      /* ========================================
        ヘッダー
        ======================================== */
 
-    .header {
-      height: 50px;
+      .header {
+        height: 50px;
 
-      display: flex;
-      align-items: center;
+        display: flex;
+        align-items: center;
 
-      padding:
-        0 10px;
+        padding: 0 10px;
 
-      background: #ffffff;
+        background: #ffffff;
 
-      border-bottom:
-        1px solid #ddd;
+        border-bottom: 1px solid #ddd;
 
-      position: sticky;
-      top: 0;
+        position: sticky;
+        top: 0;
 
-      z-index: 100;
-    }
+        z-index: 100;
+      }
 
+      .header-title {
+        font-size: 16px;
+        font-weight: 600;
 
-    .header-title {
-      font-size: 16px;
-      font-weight: 600;
+        white-space: nowrap;
+      }
 
-      white-space: nowrap;
-    }
+      .header-info {
+        margin-left: auto;
 
+        display: flex;
+        align-items: center;
 
-    .header-info {
-      margin-left: auto;
+        gap: 8px;
 
-      display: flex;
-      align-items: center;
+        min-width: 0;
+      }
 
-      gap: 8px;
+      .last-updated {
+        font-size: 10px;
 
-      min-width: 0;
-    }
+        color: #999;
 
+        white-space: nowrap;
+      }
 
-    .last-updated {
-      font-size: 10px;
+      .refresh-button {
+        border: 1px solid #ccc;
 
-      color: #999;
+        background: #fff;
 
-      white-space: nowrap;
-    }
+        color: #333;
 
+        border-radius: 5px;
 
-    .refresh-button {
-      border: 1px solid #ccc;
+        padding: 5px 8px;
 
-      background: #fff;
+        font-size: 12px;
 
-      color: #333;
+        cursor: pointer;
 
-      border-radius: 5px;
+        white-space: nowrap;
+      }
 
-      padding:
-        5px 8px;
+      .refresh-button:active {
+        background: #eee;
+      }
 
-      font-size: 12px;
+      .refresh-button:disabled {
+        opacity: 0.5;
+        cursor: default;
+      }
 
-      cursor: pointer;
-
-      white-space: nowrap;
-    }
-
-
-    .refresh-button:active {
-      background: #eee;
-    }
-
-
-    .refresh-button:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-
-
-    /* ========================================
+      /* ========================================
        メイン
        ======================================== */
 
-    .container {
-      width: 100%;
+      .container {
+        width: 100%;
 
-      max-width: 1000px;
+        max-width: 1000px;
 
-      margin: 0 auto;
+        margin: 0 auto;
 
-      padding:
-        16px 12px 30px;
-    }
+        padding: 16px 12px 30px;
+      }
 
-
-    /* ========================================
+      /* ========================================
        ページタイトル
        ======================================== */
 
-    .page-title {
-      margin:
-        0 0 14px;
+      .page-title {
+        margin: 0 0 14px;
 
-      font-size: 20px;
-      font-weight: 600;
-    }
+        font-size: 20px;
+        font-weight: 600;
+      }
 
-
-    /* ========================================
+      /* ========================================
        検索
        ======================================== */
 
-    .search-area {
-      display: flex;
+      .search-area {
+        display: flex;
 
-      gap: 8px;
+        gap: 8px;
 
-      margin-bottom: 14px;
-    }
+        margin-bottom: 14px;
+      }
 
+      .search-input {
+        flex: 1;
 
-    .search-input {
-      flex: 1;
+        min-width: 0;
 
-      min-width: 0;
+        height: 40px;
 
-      height: 40px;
+        padding: 0 10px;
 
-      padding:
-        0 10px;
+        border: 1px solid #ccc;
 
-      border:
-        1px solid #ccc;
+        border-radius: 6px;
 
-      border-radius: 6px;
+        background: #fff;
 
-      background: #fff;
+        font-size: 14px;
+      }
 
-      font-size: 14px;
-    }
+      .search-button {
+        height: 40px;
 
+        padding: 0 14px;
 
-    .search-button {
-      height: 40px;
+        border: none;
 
-      padding:
-        0 14px;
+        border-radius: 6px;
 
-      border: none;
+        background: #333;
 
-      border-radius: 6px;
+        color: #fff;
 
-      background: #333;
+        font-size: 14px;
 
-      color: #fff;
+        cursor: pointer;
+      }
 
-      font-size: 14px;
+      .search-button:active {
+        opacity: 0.8;
+      }
 
-      cursor: pointer;
-    }
-
-
-    .search-button:active {
-      opacity: 0.8;
-    }
-
-
-    /* ========================================
+      /* ========================================
        件数
        ======================================== */
 
-    .list-info {
-      display: flex;
+      .list-info {
+        display: flex;
 
-      justify-content: space-between;
+        justify-content: space-between;
 
-      align-items: center;
+        align-items: center;
 
-      margin-bottom: 8px;
+        margin-bottom: 8px;
 
-      font-size: 12px;
+        font-size: 12px;
 
-      color: #777;
-    }
+        color: #777;
+      }
 
-
-    /* ========================================
+      /* ========================================
        一覧
        ======================================== */
 
-    .table-wrapper {
-      width: 100%;
+      .table-wrapper {
+        width: 100%;
 
-      overflow-x: auto;
+        overflow-x: auto;
 
-      background: #fff;
+        background: #fff;
 
-      border:
-        1px solid #ddd;
+        border: 1px solid #ddd;
 
-      border-radius: 6px;
-    }
+        border-radius: 6px;
+      }
 
+      table {
+        width: 100%;
 
-    table {
-      width: 100%;
+        border-collapse: collapse;
 
-      border-collapse: collapse;
+        min-width: 700px;
+      }
 
-      min-width: 700px;
-    }
+      th,
+      td {
+        padding: 9px 8px;
 
+        border-bottom: 1px solid #eee;
 
-    th,
-    td {
-      padding:
-        9px 8px;
+        text-align: left;
 
-      border-bottom:
-        1px solid #eee;
+        font-size: 13px;
 
-      text-align: left;
+        vertical-align: middle;
+      }
 
-      font-size: 13px;
+      th {
+        background: #f7f7f7;
 
-      vertical-align: middle;
-    }
+        font-weight: 600;
 
+        color: #555;
 
-    th {
-      background: #f7f7f7;
+        white-space: nowrap;
+      }
 
-      font-weight: 600;
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
 
-      color: #555;
+      tbody tr:hover {
+        background: #fafafa;
+      }
 
-      white-space: nowrap;
-    }
+      .id-cell {
+        font-weight: 600;
 
+        white-space: nowrap;
+      }
 
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
+      .memo-cell,
+      .damage-cell {
+        max-width: 220px;
 
+        white-space: nowrap;
 
-    tbody tr:hover {
-      background: #fafafa;
-    }
+        overflow: hidden;
 
+        text-overflow: ellipsis;
+      }
 
-    .id-cell {
-      font-weight: 600;
-
-      white-space: nowrap;
-    }
-
-
-    .memo-cell,
-    .damage-cell {
-      max-width: 220px;
-
-      white-space: nowrap;
-
-      overflow: hidden;
-
-      text-overflow: ellipsis;
-    }
-
-
-    /* ========================================
+      /* ========================================
        状態表示
        ======================================== */
 
-    .status {
-      display: inline-block;
+      .status {
+        display: inline-block;
 
-      padding:
-        3px 7px;
+        padding: 3px 7px;
 
-      border-radius: 4px;
+        border-radius: 4px;
 
-      font-size: 11px;
+        font-size: 11px;
 
-      white-space: nowrap;
-    }
+        white-space: nowrap;
+      }
 
+      .status-available {
+        background: #eef7ee;
+        color: #357335;
+      }
 
-    .status-available {
-      background: #eef7ee;
-      color: #357335;
-    }
+      .status-warning {
+        background: #fff7e5;
+        color: #8a6500;
+      }
 
+      .status-unavailable {
+        background: #fbeeee;
+        color: #9a3333;
+      }
 
-    .status-warning {
-      background: #fff7e5;
-      color: #8a6500;
-    }
+      .status-using {
+        background: #eef3fa;
+        color: #365b8c;
+      }
 
+      .status-free {
+        background: #f2f2f2;
+        color: #666;
+      }
 
-    .status-unavailable {
-      background: #fbeeee;
-      color: #9a3333;
-    }
-
-
-    .status-using {
-      background: #eef3fa;
-      color: #365b8c;
-    }
-
-
-    .status-free {
-      background: #f2f2f2;
-      color: #666;
-    }
-
-
-    /* ========================================
+      /* ========================================
        編集ボタン
        ======================================== */
 
-    .edit-button {
-      border:
-        1px solid #bbb;
+      .edit-button {
+        border: 1px solid #bbb;
 
-      background: #fff;
+        background: #fff;
 
-      border-radius: 5px;
+        border-radius: 5px;
 
-      padding:
-        5px 9px;
+        padding: 5px 9px;
 
-      font-size: 12px;
+        font-size: 12px;
 
-      cursor: pointer;
+        cursor: pointer;
 
-      white-space: nowrap;
-    }
+        white-space: nowrap;
+      }
 
+      .edit-button:active {
+        background: #eee;
+      }
 
-    .edit-button:active {
-      background: #eee;
-    }
-
-
-    /* ========================================
+      /* ========================================
        メッセージ
        ======================================== */
 
-    .message {
-      display: none;
+      .message {
+        display: none;
 
-      margin-bottom: 12px;
+        margin-bottom: 12px;
 
-      padding:
-        10px 12px;
+        padding: 10px 12px;
 
-      border-radius: 6px;
+        border-radius: 6px;
 
-      font-size: 13px;
-    }
+        font-size: 13px;
+      }
 
+      .message.show {
+        display: block;
+      }
 
-    .message.show {
-      display: block;
-    }
+      .message.error {
+        background: #fbeeee;
+        color: #9a3333;
 
+        border: 1px solid #e5baba;
+      }
 
-    .message.error {
-      background: #fbeeee;
-      color: #9a3333;
+      .message.info {
+        background: #eef3fa;
+        color: #365b8c;
 
-      border:
-        1px solid #e5baba;
-    }
+        border: 1px solid #c5d5ea;
+      }
 
-
-    .message.info {
-      background: #eef3fa;
-      color: #365b8c;
-
-      border:
-        1px solid #c5d5ea;
-    }
-
-
-    /* ========================================
+      /* ========================================
        空データ
        ======================================== */
 
-    .empty {
-      padding:
-        40px 20px;
+      .empty {
+        padding: 40px 20px;
 
-      text-align: center;
+        text-align: center;
 
-      color: #999;
+        color: #999;
 
-      font-size: 13px;
-    }
+        font-size: 13px;
+      }
 
-
-    /* ========================================
+      /* ========================================
        ローディング
        ======================================== */
 
-    .loading {
-      padding:
-        35px 20px;
+      .loading {
+        padding: 35px 20px;
 
-      text-align: center;
+        text-align: center;
 
-      color: #888;
+        color: #888;
 
-      font-size: 13px;
-    }
+        font-size: 13px;
+      }
 
-
-    /* ========================================
+      /* ========================================
        戻るボタン
        ======================================== */
 
-    .back-area {
-      margin-top: 14px;
-    }
+      .back-area {
+        margin-top: 14px;
+      }
 
+      .back-button {
+        width: 100%;
 
-    .back-button {
-      width: 100%;
+        height: 40px;
 
-      height: 40px;
+        border: 1px solid #ccc;
 
-      border:
-        1px solid #ccc;
+        background: #fff;
 
-      background: #fff;
+        border-radius: 6px;
 
-      border-radius: 6px;
+        font-size: 13px;
 
-      font-size: 13px;
+        cursor: pointer;
+      }
 
-      cursor: pointer;
-    }
-
-
-    /* ========================================
+      /* ========================================
        スマホ
        ======================================== */
 
-    @media (
-      max-width: 600px
-    ) {
+      @media (max-width: 600px) {
+        .container {
+          padding: 12px 8px 24px;
+        }
 
-      .container {
-        padding:
-          12px 8px 24px;
+        .page-title {
+          font-size: 18px;
+        }
+
+        .last-updated {
+          font-size: 9px;
+        }
+
+        .refresh-button {
+          padding: 5px 7px;
+
+          font-size: 11px;
+        }
+
+        .search-button {
+          padding: 0 12px;
+        }
       }
+    </style>
+  </head>
 
-
-      .page-title {
-        font-size: 18px;
-      }
-
-
-      .last-updated {
-        font-size: 9px;
-      }
-
-
-      .refresh-button {
-        padding:
-          5px 7px;
-
-        font-size: 11px;
-      }
-
-
-      .search-button {
-        padding:
-          0 12px;
-      }
-
-    }
-
-  </style>
-
-</head>
-
-
-<body>
-
-
-  <!-- ======================================
+  <body>
+    <!-- ======================================
        ヘッダー
        ======================================= -->
 
-  <header class="header">
+    <header class="header">
+      <div class="header-title">譜面台管理システム</div>
 
-    <div class="header-title">
-      譜面台管理
-    </div>
+      <div class="header-info">
+        <div id="lastUpdated" class="last-updated">最終更新：未取得</div>
 
-
-    <div class="header-info">
-
-      <div
-        id="lastUpdated"
-        class="last-updated"
-      >
-        最終更新：未取得
+        <button
+          id="refreshButton"
+          class="refresh-button"
+          type="button"
+          onclick="handleRefresh()"
+        >
+          ↻ 更新
+        </button>
       </div>
+    </header>
 
-
-      <button
-        id="refreshButton"
-        class="refresh-button"
-        type="button"
-        onclick="handleRefresh()"
-      >
-        ↻ 更新
-      </button>
-
-    </div>
-
-  </header>
-
-
-
-  <!-- ======================================
+    <!-- ======================================
        メイン
        ======================================= -->
 
-  <main class="container">
+    <main class="container">
+      <h1 class="page-title">譜面台を管理</h1>
 
+      <!-- メッセージ -->
 
-    <h1 class="page-title">
-      譜面台を管理
-    </h1>
+      <div id="message" class="message"></div>
 
+      <!-- 検索 -->
 
-    <!-- メッセージ -->
+      <div class="search-area">
+        <input
+          id="searchInput"
+          class="search-input"
+          type="search"
+          placeholder="IDで検索（例：A-001）"
+          autocomplete="off"
+        />
 
-    <div
-      id="message"
-      class="message"
-    ></div>
-
-
-    <!-- 検索 -->
-
-    <div class="search-area">
-
-      <input
-        id="searchInput"
-        class="search-input"
-        type="search"
-        placeholder="IDで検索（例：A-001）"
-        autocomplete="off"
-      >
-
-
-      <button
-        class="search-button"
-        type="button"
-        onclick="handleSearch()"
-      >
-        検索
-      </button>
-
-    </div>
-
-
-    <!-- 件数 -->
-
-    <div class="list-info">
-
-      <span id="countText">
-        0件
-      </span>
-
-
-      <span>
-        譜面台一覧
-      </span>
-
-    </div>
-
-
-    <!-- 一覧 -->
-
-    <div class="table-wrapper">
-
-      <div
-        id="loading"
-        class="loading"
-      >
-        読み込み中...
+        <button class="search-button" type="button" onclick="handleSearch()">
+          検索
+        </button>
       </div>
 
+      <!-- 件数 -->
 
-      <table
-        id="standTable"
-        style="display:none;"
-      >
+      <div class="list-info">
+        <span id="countText"> 0件 </span>
 
-        <thead>
-
-          <tr>
-
-            <th>ID</th>
-
-            <th>管理パート</th>
-
-            <th>使用状況</th>
-
-            <th>使用可否</th>
-
-            <th>損傷情報</th>
-
-            <th>メモ</th>
-
-            <th>操作</th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody
-          id="standTableBody"
-        ></tbody>
-
-      </table>
-
-
-      <div
-        id="emptyMessage"
-        class="empty"
-        style="display:none;"
-      >
-        譜面台データがありません。
+        <span> 譜面台一覧 </span>
       </div>
 
-    </div>
+      <!-- 一覧 -->
 
+      <div class="table-wrapper">
+        <div id="loading" class="loading">読み込み中...</div>
 
-    <!-- 戻る -->
+        <table id="standTable" style="display: none">
+          <thead>
+            <tr>
+              <th>ID</th>
 
-    <div class="back-area">
+              <th>管理パート</th>
 
-      <button
-        class="back-button"
-        type="button"
-        onclick="goHome()"
-      >
-        ← メイン画面へ戻る
-      </button>
+              <th>使用状況</th>
 
-    </div>
+              <th>使用可否</th>
 
+              <th>損傷情報</th>
 
-  </main>
+              <th>メモ</th>
 
+              <th>操作</th>
+            </tr>
+          </thead>
 
+          <tbody id="standTableBody"></tbody>
+        </table>
 
-  <!-- ======================================
+        <div id="emptyMessage" class="empty" style="display: none">
+          譜面台データがありません。
+        </div>
+      </div>
+
+      <!-- 戻る -->
+
+      <div class="back-area">
+        <button class="back-button" type="button" onclick="goHome()">
+          ← メイン画面へ戻る
+        </button>
+      </div>
+    </main>
+
+    <!-- ======================================
        JavaScript
        ======================================= -->
 
-  <script src="config.js"></script>
+    <script src="config.js"></script>
 
-  <script src="api.js"></script>
+    <script src="api.js"></script>
 
-  <script src="dataStore.js"></script>
+    <script src="dataStore.js"></script>
 
+    <script>
+      /**
+       * ========================================
+       * ページ初期化
+       * ========================================
+       */
 
-  <script>
+      document.addEventListener("DOMContentLoaded", initializePage);
 
-
-    /**
-     * ========================================
-     * ページ初期化
-     * ========================================
-     */
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      initializePage
-    );
-
-
-    async function initializePage() {
-
-      updateLastUpdatedText();
-
-
-      try {
-
-        /**
-         * LIST_CACHE_HOURS
-         *
-         * 通常は24時間。
-         *
-         * dataStore.js側で
-         * キャッシュ期限を判定する。
-         */
-        const data =
-          await getStandData(
-            LIST_CACHE_HOURS
-          );
-
-
-        renderStandList(
-          data
-        );
-
-
+      async function initializePage() {
         updateLastUpdatedText();
 
+        try {
+          /**
+           * LIST_CACHE_HOURS
+           *
+           * 通常は24時間。
+           *
+           * dataStore.js側で
+           * キャッシュ期限を判定する。
+           */
+          const data = await getStandData(LIST_CACHE_HOURS);
+
+          renderStandList(data);
+
+          updateLastUpdatedText();
+
+          /**
+           * URLに検索IDがあれば
+           * 自動検索する。
+           *
+           * 例：
+           * list.html?id=A-001
+           */
+          handleUrlSearch();
+        } catch (error) {
+          console.error("一覧取得エラー:", error);
+
+          showMessage(
+            error.message || "譜面台データの取得に失敗しました。",
+            "error",
+          );
+
+          showEmptyState();
+        }
+      }
+
+      /**
+       * ========================================
+       * URLパラメータ
+       * ========================================
+       */
+
+      function handleUrlSearch() {
+        const params = new URLSearchParams(window.location.search);
+
+        const id = params.get("id");
+
+        if (!id) {
+          return;
+        }
+
+        const input = document.getElementById("searchInput");
+
+        input.value = id;
+
+        handleSearch();
+      }
+
+      /**
+       * ========================================
+       * 一覧表示
+       * ========================================
+       */
+
+      function renderStandList(data) {
+        const loading = document.getElementById("loading");
+
+        const table = document.getElementById("standTable");
+
+        const empty = document.getElementById("emptyMessage");
+
+        const tbody = document.getElementById("standTableBody");
+
+        loading.style.display = "none";
+
+        tbody.innerHTML = "";
+
+        if (!Array.isArray(data) || data.length === 0) {
+          table.style.display = "none";
+
+          empty.style.display = "block";
+
+          updateCount(0);
+
+          return;
+        }
+
+        empty.style.display = "none";
+
+        table.style.display = "table";
+
+        data.forEach((stand) => {
+          const row = createStandRow(stand);
+
+          tbody.appendChild(row);
+        });
+
+        updateCount(data.length);
+      }
+
+      /**
+       * ========================================
+       * 行作成
+       * ========================================
+       */
+
+      function createStandRow(stand) {
+        const tr = document.createElement("tr");
 
         /**
-         * URLに検索IDがあれば
-         * 自動検索する。
-         *
-         * 例：
-         * list.html?id=A-001
+         * ID
          */
-        handleUrlSearch();
 
-      } catch (error) {
+        const idCell = document.createElement("td");
 
-        console.error(
-          "一覧取得エラー:",
-          error
-        );
+        idCell.className = "id-cell";
 
-
-        showMessage(
-          error.message ||
-          "譜面台データの取得に失敗しました。",
-          "error"
-        );
-
-
-        showEmptyState();
-
-      }
-
-    }
-
-
-    /**
-     * ========================================
-     * URLパラメータ
-     * ========================================
-     */
-
-    function handleUrlSearch() {
-
-      const params =
-        new URLSearchParams(
-          window.location.search
-        );
-
-
-      const id =
-        params.get("id");
-
-
-      if (!id) {
-
-        return;
-
-      }
-
-
-      const input =
-        document.getElementById(
-          "searchInput"
-        );
-
-
-      input.value =
-        id;
-
-
-      handleSearch();
-
-    }
-
-
-    /**
-     * ========================================
-     * 一覧表示
-     * ========================================
-     */
-
-    function renderStandList(
-      data
-    ) {
-
-      const loading =
-        document.getElementById(
-          "loading"
-        );
-
-
-      const table =
-        document.getElementById(
-          "standTable"
-        );
-
-
-      const empty =
-        document.getElementById(
-          "emptyMessage"
-        );
-
-
-      const tbody =
-        document.getElementById(
-          "standTableBody"
-        );
-
-
-      loading.style.display =
-        "none";
-
-
-      tbody.innerHTML =
-        "";
-
-
-      if (
-        !Array.isArray(data) ||
-        data.length === 0
-      ) {
-
-        table.style.display =
-          "none";
-
-        empty.style.display =
-          "block";
-
-        updateCount(0);
-
-        return;
-
-      }
-
-
-      empty.style.display =
-        "none";
-
-
-      table.style.display =
-        "table";
-
-
-      data.forEach(
-        stand => {
-
-          const row =
-            createStandRow(
-              stand
-            );
-
-
-          tbody.appendChild(
-            row
-          );
-
-        }
-      );
-
-
-      updateCount(
-        data.length
-      );
-
-    }
-
-
-    /**
-     * ========================================
-     * 行作成
-     * ========================================
-     */
-
-    function createStandRow(
-      stand
-    ) {
-
-      const tr =
-        document.createElement(
-          "tr"
-        );
-
-
-      /**
-       * ID
-       */
-
-      const idCell =
-        document.createElement(
-          "td"
-        );
-
-      idCell.className =
-        "id-cell";
-
-      idCell.textContent =
-        stand.ID || "";
-
-
-      /**
-       * 管理パート
-       */
-
-      const partCell =
-        document.createElement(
-          "td"
-        );
-
-      partCell.textContent =
-        stand["管理パート"] || "";
-
-
-      /**
-       * 使用状況
-       */
-
-      const usageCell =
-        document.createElement(
-          "td"
-        );
-
-      usageCell.appendChild(
-        createStatusLabel(
-          stand["使用状況"],
-          "usage"
-        )
-      );
-
-
-      /**
-       * 使用可否
-       */
-
-      const availabilityCell =
-        document.createElement(
-          "td"
-        );
-
-      availabilityCell.appendChild(
-        createStatusLabel(
-          stand["使用可否"],
-          "availability"
-        )
-      );
-
-
-      /**
-       * 損傷情報
-       */
-
-      const damageCell =
-        document.createElement(
-          "td"
-        );
-
-      damageCell.className =
-        "damage-cell";
-
-      damageCell.textContent =
-        stand["損傷情報"] || "";
-
-
-      /**
-       * メモ
-       */
-
-      const memoCell =
-        document.createElement(
-          "td"
-        );
-
-      memoCell.className =
-        "memo-cell";
-
-      memoCell.textContent =
-        stand["メモ"] || "";
-
-
-      /**
-       * 編集
-       */
-
-      const actionCell =
-        document.createElement(
-          "td"
-        );
-
-
-      const editButton =
-        document.createElement(
-          "button"
-        );
-
-
-      editButton.type =
-        "button";
-
-
-      editButton.className =
-        "edit-button";
-
-
-      editButton.textContent =
-        "編集";
-
-
-      editButton.addEventListener(
-        "click",
-        () => {
-
-          goToEdit(
-            stand.ID
-          );
-
-        }
-      );
-
-
-      actionCell.appendChild(
-        editButton
-      );
-
-
-      /**
-       * 行に追加
-       */
-
-      tr.appendChild(
-        idCell
-      );
-
-      tr.appendChild(
-        partCell
-      );
-
-      tr.appendChild(
-        usageCell
-      );
-
-      tr.appendChild(
-        availabilityCell
-      );
-
-      tr.appendChild(
-        damageCell
-      );
-
-      tr.appendChild(
-        memoCell
-      );
-
-      tr.appendChild(
-        actionCell
-      );
-
-
-      return tr;
-
-    }
-
-
-    /**
-     * ========================================
-     * 状態ラベル
-     * ========================================
-     */
-
-    function createStatusLabel(
-      value,
-      type
-    ) {
-
-      const span =
-        document.createElement(
-          "span"
-        );
-
-
-      span.className =
-        "status";
-
-
-      const text =
-        value || "";
-
-
-      span.textContent =
-        text;
-
-
-      if (type === "availability") {
-
-        if (text === "可能") {
-
-          span.classList.add(
-            "status-available"
-          );
-
-        }
-
-        else if (text === "注意") {
-
-          span.classList.add(
-            "status-warning"
-          );
-
-        }
-
-        else if (text === "不可") {
-
-          span.classList.add(
-            "status-unavailable"
-          );
-
-        }
-
-      }
-
-
-      if (type === "usage") {
-
-        if (text === "使用中") {
-
-          span.classList.add(
-            "status-using"
-          );
-
-        }
-
-        else if (text === "空き") {
-
-          span.classList.add(
-            "status-free"
-          );
-
-        }
-
-      }
-
-
-      return span;
-
-    }
-
-
-    /**
-     * ========================================
-     * 件数
-     * ========================================
-     */
-
-    function updateCount(
-      count
-    ) {
-
-      document.getElementById(
-        "countText"
-      ).textContent =
-        count + "件";
-
-    }
-
-
-    /**
-     * ========================================
-     * 検索
-     * ========================================
-     */
-
-    function handleSearch() {
-
-      const input =
-        document.getElementById(
-          "searchInput"
-        );
-
-
-      const id =
-        input.value
-          .trim()
-          .toUpperCase();
-
-
-      if (!id) {
+        idCell.textContent = stand.ID || "";
 
         /**
-         * 空欄なら全一覧を表示
+         * 管理パート
          */
-        const data =
-          loadStoredStandData();
 
+        const partCell = document.createElement("td");
 
-        if (data) {
+        partCell.textContent = stand["管理パート"] || "";
 
-          renderStandList(
-            data
+        /**
+         * 使用状況
+         */
+
+        const usageCell = document.createElement("td");
+
+        usageCell.appendChild(createStatusLabel(stand["使用状況"], "usage"));
+
+        /**
+         * 使用可否
+         */
+
+        const availabilityCell = document.createElement("td");
+
+        availabilityCell.appendChild(
+          createStatusLabel(stand["使用可否"], "availability"),
+        );
+
+        /**
+         * 損傷情報
+         */
+
+        const damageCell = document.createElement("td");
+
+        damageCell.className = "damage-cell";
+
+        damageCell.textContent = stand["損傷情報"] || "";
+
+        /**
+         * メモ
+         */
+
+        const memoCell = document.createElement("td");
+
+        memoCell.className = "memo-cell";
+
+        memoCell.textContent = stand["メモ"] || "";
+
+        /**
+         * 編集
+         */
+
+        const actionCell = document.createElement("td");
+
+        const editButton = document.createElement("button");
+
+        editButton.type = "button";
+
+        editButton.className = "edit-button";
+
+        editButton.textContent = "編集";
+
+        editButton.addEventListener("click", () => {
+          goToEdit(stand.ID);
+        });
+
+        actionCell.appendChild(editButton);
+
+        /**
+         * 行に追加
+         */
+
+        tr.appendChild(idCell);
+
+        tr.appendChild(partCell);
+
+        tr.appendChild(usageCell);
+
+        tr.appendChild(availabilityCell);
+
+        tr.appendChild(damageCell);
+
+        tr.appendChild(memoCell);
+
+        tr.appendChild(actionCell);
+
+        return tr;
+      }
+
+      /**
+       * ========================================
+       * 状態ラベル
+       * ========================================
+       */
+
+      function createStatusLabel(value, type) {
+        const span = document.createElement("span");
+
+        span.className = "status";
+
+        const text = value || "";
+
+        span.textContent = text;
+
+        if (type === "availability") {
+          if (text === "可能") {
+            span.classList.add("status-available");
+          } else if (text === "注意") {
+            span.classList.add("status-warning");
+          } else if (text === "不可") {
+            span.classList.add("status-unavailable");
+          }
+        }
+
+        if (type === "usage") {
+          if (text === "使用中") {
+            span.classList.add("status-using");
+          } else if (text === "空き") {
+            span.classList.add("status-free");
+          }
+        }
+
+        return span;
+      }
+
+      /**
+       * ========================================
+       * 件数
+       * ========================================
+       */
+
+      function updateCount(count) {
+        document.getElementById("countText").textContent = count + "件";
+      }
+
+      /**
+       * ========================================
+       * 検索
+       * ========================================
+       */
+
+      function handleSearch() {
+        const input = document.getElementById("searchInput");
+
+        const id = input.value.trim().toUpperCase();
+
+        if (!id) {
+          /**
+           * 空欄なら全一覧を表示
+           */
+          const data = loadStoredStandData();
+
+          if (data) {
+            renderStandList(data);
+          }
+
+          hideMessage();
+
+          return;
+        }
+
+        const stand = findStandById(id);
+
+        if (!stand) {
+          showMessage(
+            "「" + id + "」の譜面台は見つかりませんでした。",
+            "error",
           );
 
+          renderStandList([]);
+
+          return;
         }
+
+        /**
+         * 見つかった譜面台だけ表示
+         */
+
+        renderStandList([stand]);
+
+        showMessage(id + " を表示しています。", "info");
+      }
+
+      /**
+       * ========================================
+       * 更新
+       * ========================================
+       */
+
+      async function handleRefresh() {
+        const button = document.getElementById("refreshButton");
+
+        button.disabled = true;
+
+        button.textContent = "更新中...";
 
         hideMessage();
 
-        return;
+        try {
+          /**
+           * キャッシュを無視して
+           * GASから最新データを取得
+           */
+          const data = await refreshStandData();
 
+          renderStandList(data);
+
+          updateLastUpdatedText();
+
+          showMessage("最新の情報に更新しました。", "info");
+        } catch (error) {
+          console.error("手動更新エラー:", error);
+
+          showMessage(error.message || "更新に失敗しました。", "error");
+        } finally {
+          button.disabled = false;
+
+          button.textContent = "↻ 更新";
+        }
       }
-
-
-      const stand =
-        findStandById(
-          id
-        );
-
-
-      if (!stand) {
-
-        showMessage(
-          "「" +
-          id +
-          "」の譜面台は見つかりませんでした。",
-          "error"
-        );
-
-
-        renderStandList(
-          []
-        );
-
-        return;
-
-      }
-
 
       /**
-       * 見つかった譜面台だけ表示
+       * ========================================
+       * 最終更新日時
+       * ========================================
        */
 
-      renderStandList([
-        stand
-      ]);
+      function updateLastUpdatedText() {
+        const element = document.getElementById("lastUpdated");
 
-
-      showMessage(
-        id +
-        " を表示しています。",
-        "info"
-      );
-
-    }
-
-
-    /**
-     * ========================================
-     * 更新
-     * ========================================
-     */
-
-    async function handleRefresh() {
-
-      const button =
-        document.getElementById(
-          "refreshButton"
-        );
-
-
-      button.disabled =
-        true;
-
-
-      button.textContent =
-        "更新中...";
-
-
-      hideMessage();
-
-
-      try {
-
-        /**
-         * キャッシュを無視して
-         * GASから最新データを取得
-         */
-        const data =
-          await refreshStandData();
-
-
-        renderStandList(
-          data
-        );
-
-
-        updateLastUpdatedText();
-
-
-        showMessage(
-          "最新の情報に更新しました。",
-          "info"
-        );
-
-      } catch (error) {
-
-        console.error(
-          "手動更新エラー:",
-          error
-        );
-
-
-        showMessage(
-          error.message ||
-          "更新に失敗しました。",
-          "error"
-        );
-
-      } finally {
-
-        button.disabled =
-          false;
-
-        button.textContent =
-          "↻ 更新";
-
+        element.textContent = "最終更新：" + getLastUpdatedText();
       }
 
-    }
+      /**
+       * ========================================
+       * 編集画面へ
+       * ========================================
+       */
 
+      function goToEdit(id) {
+        if (!id) {
+          return;
+        }
 
-    /**
-     * ========================================
-     * 最終更新日時
-     * ========================================
-     */
-
-    function updateLastUpdatedText() {
-
-      const element =
-        document.getElementById(
-          "lastUpdated"
-        );
-
-
-      element.textContent =
-        "最終更新："
-        +
-        getLastUpdatedText();
-
-    }
-
-
-    /**
-     * ========================================
-     * 編集画面へ
-     * ========================================
-     */
-
-    function goToEdit(
-      id
-    ) {
-
-      if (!id) {
-
-        return;
-
+        window.location.href = "edit.html?id=" + encodeURIComponent(id);
       }
 
+      /**
+       * ========================================
+       * メイン画面へ
+       * ========================================
+       */
 
-      window.location.href =
-        "edit.html?id=" +
-        encodeURIComponent(
-          id
-        );
+      function goHome() {
+        window.location.href = "index.html";
+      }
 
-    }
+      /**
+       * ========================================
+       * 空状態
+       * ========================================
+       */
 
+      function showEmptyState() {
+        const loading = document.getElementById("loading");
 
-    /**
-     * ========================================
-     * メイン画面へ
-     * ========================================
-     */
+        const table = document.getElementById("standTable");
 
-    function goHome() {
+        const empty = document.getElementById("emptyMessage");
 
-      window.location.href =
-        "index.html";
+        loading.style.display = "none";
 
-    }
+        table.style.display = "none";
 
+        empty.style.display = "block";
 
-    /**
-     * ========================================
-     * 空状態
-     * ========================================
-     */
+        updateCount(0);
+      }
 
-    function showEmptyState() {
+      /**
+       * ========================================
+       * メッセージ
+       * ========================================
+       */
 
-      const loading =
-        document.getElementById(
-          "loading"
-        );
+      function showMessage(text, type = "info") {
+        const element = document.getElementById("message");
 
+        element.textContent = text;
 
-      const table =
-        document.getElementById(
-          "standTable"
-        );
+        element.className = "message show " + type;
+      }
 
+      function hideMessage() {
+        const element = document.getElementById("message");
 
-      const empty =
-        document.getElementById(
-          "emptyMessage"
-        );
+        element.className = "message";
 
+        element.textContent = "";
+      }
 
-      loading.style.display =
-        "none";
+      /**
+       * ========================================
+       * Enterキー検索
+       * ========================================
+       */
 
+      document.addEventListener("DOMContentLoaded", () => {
+        const input = document.getElementById("searchInput");
 
-      table.style.display =
-        "none";
-
-
-      empty.style.display =
-        "block";
-
-
-      updateCount(0);
-
-    }
-
-
-    /**
-     * ========================================
-     * メッセージ
-     * ========================================
-     */
-
-    function showMessage(
-      text,
-      type = "info"
-    ) {
-
-      const element =
-        document.getElementById(
-          "message"
-        );
-
-
-      element.textContent =
-        text;
-
-
-      element.className =
-        "message show " +
-        type;
-
-    }
-
-
-    function hideMessage() {
-
-      const element =
-        document.getElementById(
-          "message"
-        );
-
-
-      element.className =
-        "message";
-
-      element.textContent =
-        "";
-
-    }
-
-
-    /**
-     * ========================================
-     * Enterキー検索
-     * ========================================
-     */
-
-    document.addEventListener(
-      "DOMContentLoaded",
-      () => {
-
-        const input =
-          document.getElementById(
-            "searchInput"
-          );
-
-
-        input.addEventListener(
-          "keydown",
-          event => {
-
-            if (
-              event.key ===
-              "Enter"
-            ) {
-
-              handleSearch();
-
-            }
-
+        input.addEventListener("keydown", (event) => {
+          if (event.key === "Enter") {
+            handleSearch();
           }
-        );
-
-      }
-    );
-
-  </script>
-
-
-</body>
-
+        });
+      });
+    </script>
+  </body>
 </html>
