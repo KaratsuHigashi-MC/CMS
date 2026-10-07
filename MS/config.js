@@ -79,7 +79,7 @@ const SHEET_NAME = "譜面台";
  * ↓ここにWebアプリのURLを入れる
  */
 const API_URL =
-  "ここにWebアプリのURL";
+  "https://script.google.com/macros/s/AKfycbz5UiyMkUi4qtgV43qOINz_gSODkYe1T-lhV6ug-SnnUkEUF4fwgqXthI7T9PU0a78qww/exec";
 
 
 /**
