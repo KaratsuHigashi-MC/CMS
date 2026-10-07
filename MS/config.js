@@ -261,12 +261,3 @@ const EDIT_CACHE_HOURS = 24;
  * 7日間
  */
 const INDEX_CACHE_HOURS = 24 * 7;
-
-/**
- * localStorageで使用するキー
- */
-const STORAGE_KEY_STAND_DATA =
-  "standManagementData";
-
-const STORAGE_KEY_LAST_UPDATED =
-  "standManagementLastUpdated";
