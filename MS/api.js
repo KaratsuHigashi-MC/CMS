@@ -62,8 +62,19 @@ async function api(request) {
 
       method: "POST",
 
+      /*
+       * application/json にすると
+       * ブラウザがCORSのプリフライト
+       * （OPTIONS）を発生させる。
+       *
+       * GAS Webアプリとの通信では
+       * text/plain にして回避する。
+       *
+       * 中身は今まで通りJSON文字列。
+       */
+
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "text/plain;charset=utf-8"
       },
 
       body: JSON.stringify(data)
@@ -71,6 +82,11 @@ async function api(request) {
     });
 
   } catch (error) {
+
+    console.error(
+      "GAS通信エラー:",
+      error
+    );
 
     throw new Error(
       "GASとの通信に失敗しました"
@@ -86,7 +102,8 @@ async function api(request) {
   if (!response.ok) {
 
     throw new Error(
-      "サーバーエラー: HTTP " + response.status
+      "サーバーエラー: HTTP " +
+      response.status
     );
 
   }
@@ -104,6 +121,11 @@ async function api(request) {
 
   } catch (error) {
 
+    console.error(
+      "JSON解析エラー:",
+      error
+    );
+
     throw new Error(
       "サーバーから正しいデータを受信できませんでした"
     );
@@ -118,7 +140,8 @@ async function api(request) {
   if (!result.success) {
 
     throw new Error(
-      result.error || "Unknown error"
+      result.error ||
+      "Unknown error"
     );
 
   }
