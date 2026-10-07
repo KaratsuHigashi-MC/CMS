@@ -1,49 +1,36 @@
 /**
- * 譜面台管理システム
- * 共通設定
- *
- * index.html
- * list.html
- * edit.html
- *
- * すべての画面から読み込んで使用する。
+ * ========================================
+ * 譜面台管理システム 共通設定
+ * ========================================
  */
 
 
-/* ==================================================
- * 譜面台タイプ
- * ==================================================
+/**
+ * 譜面台のタイプ一覧
  *
- * ここに存在するタイプを登録する。
- *
- * A・Bは一時的な分類なので、
- * 必要に応じて自由に追加・削除する。
+ * ※現在は仮で A / B
+ * 実際の運用に合わせてここを書き換える
  *
  * 例：
- *
- * "A"
- * "B"
- * "C"
- *
- * など。
+ * [
+ *   "A",
+ *   "B",
+ *   "C",
+ *   "D"
+ * ]
  */
-
 const STAND_TYPES = [
   "A",
   "B"
 ];
 
 
-/* ==================================================
- * 管理パート
- * ==================================================
+/**
+ * 管理パート一覧
  *
- * 譜面台を管理するパート。
- *
- * ここに追加したものが
- * 各画面のプルダウンに反映される。
+ * ここに追加・削除すれば、
+ * 各画面のプルダウンに反映できる。
  */
-
 const MANAGEMENT_PARTS = [
   "Fl",
   "Ob",
@@ -61,22 +48,18 @@ const MANAGEMENT_PARTS = [
 ];
 
 
-/* ==================================================
+/**
  * 使用状況
- * ==================================================
  */
-
 const USAGE_STATUS = [
   "空き",
   "使用中"
 ];
 
 
-/* ==================================================
+/**
  * 使用可否
- * ==================================================
  */
-
 const AVAILABILITY_STATUS = [
   "可能",
   "注意",
@@ -84,104 +67,92 @@ const AVAILABILITY_STATUS = [
 ];
 
 
-/* ==================================================
- * シート設定
- * ==================================================
+/**
+ * スプレッドシートのシート名
  */
-
 const SHEET_NAME = "譜面台";
 
 
-/* ==================================================
- * API設定
- * ==================================================
+/**
+ * GAS WebアプリURL
  *
- * GAS WebアプリのURL。
+ * ↓ここにWebアプリのURLを入れる
  */
-
 const API_URL =
   "ここにWebアプリのURL";
 
 
-/* ==================================================
- * ID設定
- * ==================================================
- *
- * IDの番号部分。
- *
- * 例：
+/**
+ * IDの数字部分の桁数
  *
  * A-001
  * A-002
  * A-003
  *
- * のように3桁で表示する。
+ * → 3桁
  */
-
 const ID_NUMBER_DIGITS = 3;
 
 
-/* ==================================================
- * 共通ヘルパー
- * ==================================================
+/**
+ * ========================================
+ * 共通プルダウン設定
+ * ========================================
  */
 
 
 /**
- * 配列からselect要素のoptionを生成する
+ * select要素に選択肢をセット
  *
- * @param {HTMLSelectElement} select
- * @param {Array<string>} items
+ * @param {string|HTMLElement} target
+ * @param {string[]} items
  * @param {string} placeholder
  */
 function populateSelect(
-  select,
+  target,
   items,
-  placeholder = "選択してください"
+  placeholder = ""
 ) {
 
+  const select =
+    typeof target === "string"
+      ? document.getElementById(target)
+      : target;
+
   if (!select) {
+    console.warn(
+      "select要素が見つかりません:",
+      target
+    );
+
     return;
   }
 
 
-  // ----------------------------------------
   // 一旦クリア
-  // ----------------------------------------
-
   select.innerHTML = "";
 
 
-  // ----------------------------------------
   // プレースホルダー
-  // ----------------------------------------
-
-  if (placeholder !== null) {
+  if (placeholder) {
 
     const option =
       document.createElement("option");
 
     option.value = "";
-
-    option.textContent =
-      placeholder;
+    option.textContent = placeholder;
 
     select.appendChild(option);
-
   }
 
 
-  // ----------------------------------------
-  // 選択肢
-  // ----------------------------------------
-
-  items.forEach(function(item) {
+  // 選択肢追加
+  items.forEach(item => {
 
     const option =
       document.createElement("option");
 
     option.value = item;
-
     option.textContent = item;
 
     select.appendChild(option);
@@ -192,64 +163,68 @@ function populateSelect(
 
 
 /**
- * 譜面台タイプのselectを設定
- *
- * @param {HTMLSelectElement} select
+ * 譜面台タイプのプルダウンを設定
  */
-function setupStandTypeSelect(select) {
+function setupStandTypeSelect(
+  target,
+  placeholder = "タイプを選択"
+) {
 
   populateSelect(
-    select,
+    target,
     STAND_TYPES,
-    "選択してください"
+    placeholder
   );
 
 }
 
 
 /**
- * 管理パートのselectを設定
- *
- * @param {HTMLSelectElement} select
+ * 管理パートのプルダウンを設定
  */
-function setupManagementPartSelect(select) {
+function setupManagementPartSelect(
+  target,
+  placeholder = "管理パートを選択"
+) {
 
   populateSelect(
-    select,
+    target,
     MANAGEMENT_PARTS,
-    "選択してください"
+    placeholder
   );
 
 }
 
 
 /**
- * 使用状況のselectを設定
- *
- * @param {HTMLSelectElement} select
+ * 使用状況のプルダウンを設定
  */
-function setupUsageStatusSelect(select) {
+function setupUsageStatusSelect(
+  target,
+  placeholder = "使用状況を選択"
+) {
 
   populateSelect(
-    select,
+    target,
     USAGE_STATUS,
-    null
+    placeholder
   );
 
 }
 
 
 /**
- * 使用可否のselectを設定
- *
- * @param {HTMLSelectElement} select
+ * 使用可否のプルダウンを設定
  */
-function setupAvailabilitySelect(select) {
+function setupAvailabilitySelect(
+  target,
+  placeholder = "使用可否を選択"
+) {
 
   populateSelect(
-    select,
+    target,
     AVAILABILITY_STATUS,
-    null
+    placeholder
   );
 
 }
