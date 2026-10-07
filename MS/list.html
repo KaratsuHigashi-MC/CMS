@@ -51,6 +51,20 @@
         white-space: nowrap;
       }
 
+      .header-brand {
+        display: flex;
+        align-items: center;
+
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .header-logo {
+        width: auto;
+        height: 32px;
+        margin-right: 8px;
+      }
+
       .header-info {
         margin-left: auto;
 
@@ -451,7 +465,10 @@
        ======================================= -->
 
     <header class="header">
-      <div class="header-title">譜面台管理システム</div>
+      <a class="header-brand" href="index.html">
+        <img class="header-logo" src="rogo.png" alt="" />
+        <div class="header-title">譜面台管理システム</div>
+      </a>
 
       <div class="header-info">
         <div id="lastUpdated" class="last-updated">最終更新：未取得</div>
