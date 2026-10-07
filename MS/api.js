@@ -1,48 +1,15 @@
 /**
+ * ========================================
  * 譜面台管理システム
  * 共通API通信
- *
- * index.html
- * list.html
- * edit.html
- *
- * から共通して使用する。
+ * ========================================
  */
 
 
-/* ==================================================
- * 設定
- * ================================================== */
-
 /**
- * WebアプリのURL
- *
- * ↓ここを自分のWebアプリURLに変更
- */
-const API_URL = "https://script.google.com/macros/s/AKfycbz5UiyMkUi4qtgV43qOINz_gSODkYe1T-lhV6ug-SnnUkEUF4fwgqXthI7T9PU0a78qww/exec";
-
-
-/**
- * 使用するシート名
- */
-const SHEET_NAME = "譜面台";
-
-
-/* ==================================================
- * 基本通信
- * ================================================== */
-
-/**
- * GAS Webアプリへリクエストを送信する
- *
- * @param {Object} request
- * @return {Promise<Object>}
+ * GAS APIへリクエスト
  */
 async function api(request) {
-
-  // ----------------------------------------
-  // シート名を自動設定
-  // ----------------------------------------
 
   const data = {
     ...request,
@@ -50,36 +17,31 @@ async function api(request) {
   };
 
 
-  // ----------------------------------------
-  // POST
-  // ----------------------------------------
-
   let response;
+
 
   try {
 
-    response = await fetch(API_URL, {
+    response = await fetch(
+      API_URL,
+      {
+        method: "POST",
 
-      method: "POST",
+        /*
+         * application/json にすると
+         * GAS WebアプリへのOPTIONS
+         * preflightが発生するため、
+         * text/plainで送信する。
+         */
+        headers: {
+          "Content-Type":
+            "text/plain;charset=utf-8"
+        },
 
-      /*
-       * application/json にすると
-       * ブラウザがCORSのプリフライト
-       * （OPTIONS）を発生させる。
-       *
-       * GAS Webアプリとの通信では
-       * text/plain にして回避する。
-       *
-       * 中身は今まで通りJSON文字列。
-       */
-
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-
-      body: JSON.stringify(data)
-
-    });
+        body:
+          JSON.stringify(data)
+      }
+    );
 
   } catch (error) {
 
@@ -95,10 +57,9 @@ async function api(request) {
   }
 
 
-  // ----------------------------------------
-  // HTTPエラー
-  // ----------------------------------------
-
+  /**
+   * HTTPエラー
+   */
   if (!response.ok) {
 
     throw new Error(
@@ -109,15 +70,15 @@ async function api(request) {
   }
 
 
-  // ----------------------------------------
-  // JSON取得
-  // ----------------------------------------
-
+  /**
+   * JSON解析
+   */
   let result;
 
   try {
 
-    result = await response.json();
+    result =
+      await response.json();
 
   } catch (error) {
 
@@ -133,10 +94,9 @@ async function api(request) {
   }
 
 
-  // ----------------------------------------
-  // SCLib側エラー
-  // ----------------------------------------
-
+  /**
+   * GAS側エラー
+   */
   if (!result.success) {
 
     throw new Error(
@@ -147,23 +107,20 @@ async function api(request) {
   }
 
 
-  // ----------------------------------------
-  // 成功
-  // ----------------------------------------
-
   return result;
 
 }
 
 
-/* ==================================================
- * 接続確認
- * ================================================== */
+/**
+ * ========================================
+ * API
+ * ========================================
+ */
+
 
 /**
- * GASとの接続を確認
- *
- * @return {Promise<Object>}
+ * API通信テスト
  */
 async function testApi() {
 
@@ -174,38 +131,23 @@ async function testApi() {
 }
 
 
-/* ==================================================
- * 譜面台一覧
- * ================================================== */
-
 /**
- * 譜面台を全件取得
- *
- * @return {Promise<Array>}
+ * 譜面台一覧取得
  */
 async function getStandList() {
 
-  const result = await api({
-
-    cmd: "list"
-
-  });
-
+  const result =
+    await api({
+      cmd: "list"
+    });
 
   return result.data || [];
 
 }
 
 
-/* ==================================================
- * 譜面台1件取得
- * ================================================== */
-
 /**
- * IDから譜面台を取得
- *
- * @param {string} id
- * @return {Promise<Object>}
+ * 譜面台1件取得
  */
 async function getStandById(id) {
 
@@ -218,13 +160,11 @@ async function getStandById(id) {
   }
 
 
-  const result = await api({
-
-    cmd: "getById",
-
-    id: id
-
-  });
+  const result =
+    await api({
+      cmd: "getById",
+      id: id
+    });
 
 
   return result.data;
@@ -232,18 +172,16 @@ async function getStandById(id) {
 }
 
 
-/* ==================================================
- * 譜面台追加
- * ================================================== */
-
 /**
- * 新しい譜面台を追加
+ * 譜面台追加
  *
  * @param {string} type
- * @param {Object} data
- * @return {Promise<Object>}
+ * @param {object} data
  */
-async function addStand(type, data) {
+async function addStand(
+  type,
+  data
+) {
 
   if (!type) {
 
@@ -263,15 +201,16 @@ async function addStand(type, data) {
   }
 
 
-  const result = await api({
+  const result =
+    await api({
 
-    cmd: "add",
+      cmd: "add",
 
-    type: type,
+      type: type,
 
-    data: data
+      data: data
 
-  });
+    });
 
 
   return result.data;
@@ -279,18 +218,15 @@ async function addStand(type, data) {
 }
 
 
-/* ==================================================
- * 譜面台更新
- * ================================================== */
-
 /**
- * 譜面台情報を更新
+ * 譜面台更新
  *
- * @param {string} id
- * @param {Object} data
- * @return {Promise<Object>}
+ * IDは変更しない。
  */
-async function updateStand(id, data) {
+async function updateStand(
+  id,
+  data
+) {
 
   if (!id) {
 
@@ -310,15 +246,16 @@ async function updateStand(id, data) {
   }
 
 
-  const result = await api({
+  const result =
+    await api({
 
-    cmd: "update",
+      cmd: "update",
 
-    id: id,
+      id: id,
 
-    data: data
+      data: data
 
-  });
+    });
 
 
   return result.data;
@@ -326,15 +263,12 @@ async function updateStand(id, data) {
 }
 
 
-/* ==================================================
- * 次のID取得
- * ================================================== */
-
 /**
- * 指定タイプの次のIDを取得
+ * 次のIDを取得
  *
- * @param {string} type
- * @return {Promise<string>}
+ * ※これは表示用のプレビュー。
+ * 実際の登録時のID生成は
+ * GAS側で行う。
  */
 async function getNextId(type) {
 
@@ -347,13 +281,14 @@ async function getNextId(type) {
   }
 
 
-  const result = await api({
+  const result =
+    await api({
 
-    cmd: "nextId",
+      cmd: "nextId",
 
-    type: type
+      type: type
 
-  });
+    });
 
 
   return result.data.id;
