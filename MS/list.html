@@ -1,0 +1,1525 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>譜面台一覧</title>
+
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      padding: 20px;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: #f5f5f5;
+
+      color: #222;
+
+    }
+
+
+    /* ========================================
+     * 全体
+     * ======================================== */
+
+    .container {
+
+      width: 100%;
+
+      max-width: 1400px;
+
+      margin: 0 auto;
+
+    }
+
+
+    h1 {
+
+      margin: 0 0 20px;
+
+      font-size: 28px;
+
+    }
+
+
+    /* ========================================
+     * カード
+     * ======================================== */
+
+    .card {
+
+      background: #fff;
+
+      border-radius: 10px;
+
+      padding: 20px;
+
+      margin-bottom: 20px;
+
+      box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.08);
+
+    }
+
+
+    /* ========================================
+     * 操作エリア
+     * ======================================== */
+
+    .filter-area {
+
+      display: grid;
+
+      grid-template-columns:
+        1.5fr
+        1fr
+        1fr
+        auto;
+
+      gap: 10px;
+
+      align-items: end;
+
+    }
+
+
+    .filter-item label {
+
+      display: block;
+
+      margin-bottom: 5px;
+
+      font-size: 13px;
+
+      font-weight: bold;
+
+    }
+
+
+    .filter-item input,
+    .filter-item select {
+
+      width: 100%;
+
+      padding: 10px;
+
+      border:
+        1px solid #ccc;
+
+      border-radius: 6px;
+
+      font-size: 14px;
+
+      background: #fff;
+
+    }
+
+
+    button {
+
+      padding: 10px 16px;
+
+      border: none;
+
+      border-radius: 6px;
+
+      background: #333;
+
+      color: #fff;
+
+      font-size: 14px;
+
+      cursor: pointer;
+
+    }
+
+
+    button:hover {
+
+      opacity: 0.85;
+
+    }
+
+
+    button.save {
+
+      background: #1976d2;
+
+    }
+
+
+    button.detail {
+
+      background: #666;
+
+    }
+
+
+    button:disabled {
+
+      background: #aaa;
+
+      cursor: not-allowed;
+
+    }
+
+
+    /* ========================================
+     * ステータス
+     * ======================================== */
+
+    #status {
+
+      margin-top: 12px;
+
+      font-size: 14px;
+
+      color: #666;
+
+    }
+
+
+    .error {
+
+      color: #d32f2f !important;
+
+    }
+
+
+    .success {
+
+      color: #2e7d32 !important;
+
+    }
+
+
+    /* ========================================
+     * 件数
+     * ======================================== */
+
+    #count {
+
+      margin-bottom: 10px;
+
+      font-size: 14px;
+
+      color: #666;
+
+    }
+
+
+    /* ========================================
+     * テーブル
+     * ======================================== */
+
+    .table-wrapper {
+
+      width: 100%;
+
+      overflow-x: auto;
+
+    }
+
+
+    table {
+
+      width: 100%;
+
+      min-width: 950px;
+
+      border-collapse: collapse;
+
+    }
+
+
+    th,
+    td {
+
+      padding: 10px;
+
+      border-bottom:
+        1px solid #ddd;
+
+      text-align: left;
+
+      vertical-align: middle;
+
+    }
+
+
+    th {
+
+      background: #f0f0f0;
+
+      font-size: 14px;
+
+      white-space: nowrap;
+
+    }
+
+
+    td {
+
+      font-size: 14px;
+
+    }
+
+
+    tbody tr:hover {
+
+      background: #fafafa;
+
+    }
+
+
+    /* ========================================
+     * セル内フォーム
+     * ======================================== */
+
+    td input,
+    td select {
+
+      width: 100%;
+
+      padding: 7px;
+
+      border:
+        1px solid #ccc;
+
+      border-radius: 5px;
+
+      font-size: 13px;
+
+      background: #fff;
+
+    }
+
+
+    td textarea {
+
+      width: 100%;
+
+      min-width: 150px;
+
+      min-height: 50px;
+
+      padding: 7px;
+
+      border:
+        1px solid #ccc;
+
+      border-radius: 5px;
+
+      font-size: 13px;
+
+      resize: vertical;
+
+    }
+
+
+    .id-cell {
+
+      font-weight: bold;
+
+      white-space: nowrap;
+
+    }
+
+
+    .action-cell {
+
+      min-width: 160px;
+
+      white-space: nowrap;
+
+    }
+
+
+    .action-cell button {
+
+      margin-right: 5px;
+
+    }
+
+
+    /* ========================================
+     * 空データ
+     * ======================================== */
+
+    .empty {
+
+      padding: 40px;
+
+      text-align: center;
+
+      color: #777;
+
+    }
+
+
+    /* ========================================
+     * ローディング
+     * ======================================== */
+
+    #loading {
+
+      display: none;
+
+      position: fixed;
+
+      top: 0;
+
+      left: 0;
+
+      right: 0;
+
+      bottom: 0;
+
+      background:
+        rgba(255, 255, 255, 0.7);
+
+      align-items: center;
+
+      justify-content: center;
+
+      z-index: 1000;
+
+    }
+
+
+    #loading.show {
+
+      display: flex;
+
+    }
+
+
+    .loading-box {
+
+      background: #fff;
+
+      padding: 20px 30px;
+
+      border-radius: 10px;
+
+      box-shadow:
+        0 2px 10px rgba(0, 0, 0, 0.15);
+
+    }
+
+
+    /* ========================================
+     * スマホ
+     * ======================================== */
+
+    @media (max-width: 800px) {
+
+      body {
+
+        padding: 10px;
+
+      }
+
+
+      .card {
+
+        padding: 15px;
+
+      }
+
+
+      h1 {
+
+        font-size: 23px;
+
+      }
+
+
+      .filter-area {
+
+        grid-template-columns: 1fr;
+
+      }
+
+
+      .filter-area button {
+
+        width: 100%;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+  <div class="container">
+
+
+    <!-- ======================================
+     * タイトル
+     * ====================================== -->
+
+    <h1>
+      譜面台一覧
+    </h1>
+
+
+    <!-- ======================================
+     * 絞り込み
+     * ====================================== -->
+
+    <div class="card">
+
+
+      <div class="filter-area">
+
+
+        <!-- ID -->
+
+        <div class="filter-item">
+
+          <label for="filter-id">
+            ID
+          </label>
+
+          <input
+            type="text"
+            id="filter-id"
+            placeholder="例：A-001"
+          >
+
+        </div>
+
+
+        <!-- 使用状況 -->
+
+        <div class="filter-item">
+
+          <label for="filter-usage">
+            使用状況
+          </label>
+
+          <select id="filter-usage">
+
+            <option value="">
+              すべて
+            </option>
+
+            <option value="使用中">
+              使用中
+            </option>
+
+            <option value="空き">
+              空き
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- 使用可否 -->
+
+        <div class="filter-item">
+
+          <label for="filter-availability">
+            使用可否
+          </label>
+
+          <select id="filter-availability">
+
+            <option value="">
+              すべて
+            </option>
+
+            <option value="可能">
+              可能
+            </option>
+
+            <option value="注意">
+              注意
+            </option>
+
+            <option value="不可">
+              不可
+            </option>
+
+          </select>
+
+        </div>
+
+
+        <!-- 更新 -->
+
+        <button
+          id="reload-button"
+          type="button"
+        >
+          再読み込み
+        </button>
+
+
+      </div>
+
+
+      <div id="status"></div>
+
+    </div>
+
+
+    <!-- ======================================
+     * 一覧
+     * ====================================== -->
+
+    <div class="card">
+
+
+      <div id="count">
+        0件
+      </div>
+
+
+      <div class="table-wrapper">
+
+
+        <table>
+
+
+          <thead>
+
+            <tr>
+
+              <th>
+                ID
+              </th>
+
+              <th>
+                管理パート
+              </th>
+
+              <th>
+                使用状況
+              </th>
+
+              <th>
+                使用可否
+              </th>
+
+              <th>
+                損傷情報
+              </th>
+
+              <th>
+                メモ
+              </th>
+
+              <th>
+                操作
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody id="stand-table-body">
+
+          </tbody>
+
+
+        </table>
+
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+  <!-- ========================================
+   * ローディング
+   * ======================================== -->
+
+  <div id="loading">
+
+    <div class="loading-box">
+      読み込み中...
+    </div>
+
+  </div>
+
+
+  <!-- ========================================
+   * 共通API
+   * ======================================== -->
+
+  <script src="api.js"></script>
+
+
+  <script>
+
+    /* ==================================================
+     * データ
+     * ================================================== */
+
+    let allStands = [];
+
+
+    /* ==================================================
+     * DOM
+     * ================================================== */
+
+    const filterId =
+      document.getElementById("filter-id");
+
+
+    const filterUsage =
+      document.getElementById("filter-usage");
+
+
+    const filterAvailability =
+      document.getElementById(
+        "filter-availability"
+      );
+
+
+    const reloadButton =
+      document.getElementById(
+        "reload-button"
+      );
+
+
+    const status =
+      document.getElementById("status");
+
+
+    const count =
+      document.getElementById("count");
+
+
+    const tableBody =
+      document.getElementById(
+        "stand-table-body"
+      );
+
+
+    const loading =
+      document.getElementById("loading");
+
+
+    /* ==================================================
+     * ローディング
+     * ================================================== */
+
+    function showLoading() {
+
+      loading.classList.add("show");
+
+    }
+
+
+    function hideLoading() {
+
+      loading.classList.remove("show");
+
+    }
+
+
+    /* ==================================================
+     * ステータス
+     * ================================================== */
+
+    function setStatus(
+      message,
+      type = ""
+    ) {
+
+      status.textContent = message;
+
+      status.className = type;
+
+    }
+
+
+    /* ==================================================
+     * 一覧取得
+     * ================================================== */
+
+    async function loadStands() {
+
+      showLoading();
+
+      setStatus("");
+
+
+      try {
+
+        allStands =
+          await getStandList();
+
+
+        renderTable();
+
+
+        setStatus(
+          "譜面台一覧を読み込みました",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        allStands = [];
+
+        renderTable();
+
+
+        setStatus(
+          error.message ||
+          "一覧の取得に失敗しました",
+
+          "error"
+        );
+
+      } finally {
+
+        hideLoading();
+
+      }
+
+    }
+
+
+    /* ==================================================
+     * 絞り込み
+     * ================================================== */
+
+    function getFilteredStands() {
+
+      const idText =
+        filterId.value
+          .trim()
+          .toLowerCase();
+
+
+      const usage =
+        filterUsage.value;
+
+
+      const availability =
+        filterAvailability.value;
+
+
+      return allStands.filter(
+        function (stand) {
+
+
+          /* --------------------------------
+           * ID
+           * -------------------------------- */
+
+          const id =
+            String(
+              stand["ID"] || ""
+            ).toLowerCase();
+
+
+          if (
+            idText &&
+            !id.includes(idText)
+          ) {
+
+            return false;
+
+          }
+
+
+          /* --------------------------------
+           * 使用状況
+           * -------------------------------- */
+
+          if (
+            usage &&
+            stand["使用状況"] !== usage
+          ) {
+
+            return false;
+
+          }
+
+
+          /* --------------------------------
+           * 使用可否
+           * -------------------------------- */
+
+          if (
+            availability &&
+            stand["使用可否"] !==
+              availability
+          ) {
+
+            return false;
+
+          }
+
+
+          return true;
+
+        }
+      );
+
+    }
+
+
+    /* ==================================================
+     * テーブル描画
+     * ================================================== */
+
+    function renderTable() {
+
+      const stands =
+        getFilteredStands();
+
+
+      tableBody.innerHTML = "";
+
+
+      count.textContent =
+        stands.length + "件";
+
+
+      /* --------------------------------
+       * データなし
+       * -------------------------------- */
+
+      if (stands.length === 0) {
+
+        const tr =
+          document.createElement("tr");
+
+
+        const td =
+          document.createElement("td");
+
+
+        td.colSpan = 7;
+
+        td.className = "empty";
+
+        td.textContent =
+          "該当する譜面台がありません";
+
+
+        tr.appendChild(td);
+
+        tableBody.appendChild(tr);
+
+        return;
+
+      }
+
+
+      /* --------------------------------
+       * データ表示
+       * -------------------------------- */
+
+      stands.forEach(
+        function (stand) {
+
+          createStandRow(stand);
+
+        }
+      );
+
+    }
+
+
+    /* ==================================================
+     * 行作成
+     * ================================================== */
+
+    function createStandRow(stand) {
+
+      const tr =
+        document.createElement("tr");
+
+
+      /* --------------------------------
+       * ID
+       * -------------------------------- */
+
+      const idTd =
+        document.createElement("td");
+
+      idTd.className =
+        "id-cell";
+
+      idTd.textContent =
+        stand["ID"] || "";
+
+      tr.appendChild(idTd);
+
+
+      /* --------------------------------
+       * 管理パート
+       * -------------------------------- */
+
+      const partTd =
+        document.createElement("td");
+
+
+      const partSelect =
+        createPartSelect(
+          stand["管理パート"]
+        );
+
+
+      partTd.appendChild(
+        partSelect
+      );
+
+
+      tr.appendChild(partTd);
+
+
+      /* --------------------------------
+       * 使用状況
+       * -------------------------------- */
+
+      const usageTd =
+        document.createElement("td");
+
+
+      const usageSelect =
+        createSelect(
+          [
+            "使用中",
+            "空き"
+          ],
+
+          stand["使用状況"]
+        );
+
+
+      usageTd.appendChild(
+        usageSelect
+      );
+
+
+      tr.appendChild(usageTd);
+
+
+      /* --------------------------------
+       * 使用可否
+       * -------------------------------- */
+
+      const availabilityTd =
+        document.createElement("td");
+
+
+      const availabilitySelect =
+        createSelect(
+          [
+            "可能",
+            "注意",
+            "不可"
+          ],
+
+          stand["使用可否"]
+        );
+
+
+      availabilityTd.appendChild(
+        availabilitySelect
+      );
+
+
+      tr.appendChild(
+        availabilityTd
+      );
+
+
+      /* --------------------------------
+       * 損傷情報
+       * -------------------------------- */
+
+      const damageTd =
+        document.createElement("td");
+
+
+      const damageInput =
+        document.createElement("input");
+
+
+      damageInput.type = "text";
+
+      damageInput.value =
+        stand["損傷情報"] || "";
+
+
+      damageTd.appendChild(
+        damageInput
+      );
+
+
+      tr.appendChild(
+        damageTd
+      );
+
+
+      /* --------------------------------
+       * メモ
+       * -------------------------------- */
+
+      const memoTd =
+        document.createElement("td");
+
+
+      const memoInput =
+        document.createElement("input");
+
+
+      memoInput.type = "text";
+
+      memoInput.value =
+        stand["メモ"] || "";
+
+
+      memoTd.appendChild(
+        memoInput
+      );
+
+
+      tr.appendChild(
+        memoTd
+      );
+
+
+      /* --------------------------------
+       * 操作
+       * -------------------------------- */
+
+      const actionTd =
+        document.createElement("td");
+
+
+      actionTd.className =
+        "action-cell";
+
+
+      /* 保存 */
+
+      const saveButton =
+        document.createElement("button");
+
+
+      saveButton.type = "button";
+
+      saveButton.className = "save";
+
+      saveButton.textContent =
+        "保存";
+
+
+      saveButton.addEventListener(
+        "click",
+        async function () {
+
+          await saveRow(
+            stand["ID"],
+            partSelect.value,
+            usageSelect.value,
+            availabilitySelect.value,
+            damageInput.value,
+            memoInput.value,
+            saveButton
+          );
+
+        }
+      );
+
+
+      actionTd.appendChild(
+        saveButton
+      );
+
+
+      /* 詳細 */
+
+      const detailButton =
+        document.createElement("button");
+
+
+      detailButton.type = "button";
+
+      detailButton.className =
+        "detail";
+
+      detailButton.textContent =
+        "詳細";
+
+
+      detailButton.addEventListener(
+        "click",
+        function () {
+
+          openDetail(
+            stand["ID"]
+          );
+
+        }
+      );
+
+
+      actionTd.appendChild(
+        detailButton
+      );
+
+
+      tr.appendChild(
+        actionTd
+      );
+
+
+      tableBody.appendChild(tr);
+
+    }
+
+
+    /* ==================================================
+     * select作成
+     * ================================================== */
+
+    function createSelect(
+      options,
+      currentValue
+    ) {
+
+      const select =
+        document.createElement("select");
+
+
+      options.forEach(
+        function (value) {
+
+          const option =
+            document.createElement("option");
+
+
+          option.value = value;
+
+          option.textContent = value;
+
+
+          if (value === currentValue) {
+
+            option.selected = true;
+
+          }
+
+
+          select.appendChild(option);
+
+        }
+      );
+
+
+      return select;
+
+    }
+
+
+    /* ==================================================
+     * 管理パートselect
+     * ================================================== */
+
+    function createPartSelect(
+      currentValue
+    ) {
+
+      const options = [
+
+        "",
+
+        "Fl",
+        "Ob",
+        "Cl",
+        "Fg",
+        "Sax",
+        "Tp",
+        "Hr",
+        "Tb",
+        "Euph",
+        "Tuba",
+        "Perc",
+        "String",
+        "Other"
+
+      ];
+
+
+      const select =
+        createSelect(
+          options,
+          currentValue || ""
+        );
+
+
+      if (!currentValue) {
+
+        select.options[0].textContent =
+          "選択してください";
+
+      }
+
+
+      return select;
+
+    }
+
+
+    /* ==================================================
+     * 行保存
+     * ================================================== */
+
+    async function saveRow(
+      id,
+      part,
+      usage,
+      availability,
+      damage,
+      memo,
+      button
+    ) {
+
+      if (!id) {
+
+        setStatus(
+          "IDがありません",
+          "error"
+        );
+
+        return;
+
+      }
+
+
+      const data = {
+
+        "管理パート":
+          part,
+
+        "使用状況":
+          usage,
+
+        "使用可否":
+          availability,
+
+        "損傷情報":
+          damage,
+
+        "メモ":
+          memo
+
+      };
+
+
+      button.disabled = true;
+
+      showLoading();
+
+
+      try {
+
+        const updated =
+          await updateStand(
+            id,
+            data
+          );
+
+
+        /* --------------------------------
+         * ローカルデータ更新
+         * -------------------------------- */
+
+        const index =
+          allStands.findIndex(
+            function (stand) {
+
+              return String(
+                stand["ID"]
+              ) === String(id);
+
+            }
+          );
+
+
+        if (index !== -1) {
+
+          allStands[index] =
+            updated;
+
+        }
+
+
+        renderTable();
+
+
+        setStatus(
+          id + " を保存しました",
+          "success"
+        );
+
+
+      } catch (error) {
+
+        setStatus(
+          error.message ||
+          "保存に失敗しました",
+
+          "error"
+        );
+
+      } finally {
+
+        button.disabled = false;
+
+        hideLoading();
+
+      }
+
+    }
+
+
+    /* ==================================================
+     * 詳細画面
+     * ================================================== */
+
+    function openDetail(id) {
+
+      if (!id) {
+
+        return;
+
+      }
+
+
+      const url =
+        "edit.html?id=" +
+        encodeURIComponent(id);
+
+
+      window.location.href =
+        url;
+
+    }
+
+
+    /* ==================================================
+     * フィルター変更
+     * ================================================== */
+
+    filterId.addEventListener(
+      "input",
+      function () {
+
+        renderTable();
+
+      }
+    );
+
+
+    filterUsage.addEventListener(
+      "change",
+      function () {
+
+        renderTable();
+
+      }
+    );
+
+
+    filterAvailability.addEventListener(
+      "change",
+      function () {
+
+        renderTable();
+
+      }
+    );
+
+
+    /* ==================================================
+     * EnterでID検索
+     * ================================================== */
+
+    filterId.addEventListener(
+      "keydown",
+      function (event) {
+
+        if (event.key === "Enter") {
+
+          renderTable();
+
+        }
+
+      }
+    );
+
+
+    /* ==================================================
+     * 再読み込み
+     * ================================================== */
+
+    reloadButton.addEventListener(
+      "click",
+      function () {
+
+        loadStands();
+
+      }
+    );
+
+
+    /* ==================================================
+     * 初期化
+     * ================================================== */
+
+    loadStands();
+
+  </script>
+
+
+</body>
+
+</html>
