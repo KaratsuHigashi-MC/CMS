@@ -41,7 +41,7 @@ const MANAGEMENT_PARTS = [
 /**
  * 使用状況
  */
-const USAGE_STATUS = ["空き", "使用中"];
+const USAGE_STATUS = ["空き", "使用中", "修復中"];
 
 /**
  * 使用可否
