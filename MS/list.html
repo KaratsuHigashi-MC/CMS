@@ -502,7 +502,7 @@
           id="searchInput"
           class="search-input"
           type="search"
-          placeholder="IDで検索（例：A-001）"
+          placeholder="ID・タイプ・使用状況などで検索"
           autocomplete="off"
         />
 
@@ -842,9 +842,9 @@
       function handleSearch() {
         const input = document.getElementById("searchInput");
 
-        const id = input.value.trim().toUpperCase();
+        const query = input.value.trim().toUpperCase();
 
-        if (!id) {
+        if (!query) {
           /**
            * 空欄なら全一覧を表示
            */
@@ -859,26 +859,55 @@
           return;
         }
 
-        const stand = findStandById(id);
+        const exactStand = findStandById(query);
 
-        if (!stand) {
-          showMessage(
-            "「" + id + "」の譜面台は見つかりませんでした。",
-            "error",
-          );
+        if (exactStand) {
+          renderStandList([exactStand]);
 
-          renderStandList([]);
+          showMessage(query + " を表示しています。", "info");
 
           return;
         }
 
-        /**
-         * 見つかった譜面台だけ表示
-         */
+        const data = loadStoredStandData() || [];
 
-        renderStandList([stand]);
+        const isTypeSearch = STAND_TYPES.some(
+          (type) => String(type).trim().toUpperCase() === query,
+        );
 
-        showMessage(id + " を表示しています。", "info");
+        const matchingStands = data.filter((stand) => {
+          if (isTypeSearch) {
+            return String(stand.ID || "")
+              .trim()
+              .toUpperCase()
+              .startsWith(query + "-");
+          }
+
+          return [
+            stand.ID,
+            stand["管理パート"],
+            stand["使用状況"],
+            stand["使用可否"],
+            stand["損傷情報"],
+            stand["メモ"],
+          ].some((value) =>
+            String(value || "")
+              .trim()
+              .toUpperCase()
+              .includes(query),
+          );
+        });
+
+        renderStandList(matchingStands);
+
+        if (matchingStands.length > 0) {
+          showMessage("「" + query + "」の検索結果を表示しています。", "info");
+        } else {
+          showMessage(
+            "「" + query + "」に一致する譜面台が見つかりませんでした。",
+            "error",
+          );
+        }
       }
 
       /**
