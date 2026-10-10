@@ -417,11 +417,11 @@
         display: none;
       }
 
-      .actual-stand-actions {
+      .button-area.actual-stand-actions {
         display: none;
       }
 
-      .actual-mode .actual-stand-actions {
+      .actual-mode .button-area.actual-stand-actions {
         display: flex;
       }
 
@@ -1361,7 +1361,13 @@
 
         const id = params.get("id");
 
-        actualSearchMode = params.get("actual") === "y" && !id;
+        const isActualAccess = params.get("actual") === "y";
+
+        actualSearchMode = isActualAccess && !id;
+
+        if (isActualAccess) {
+          document.body.classList.add("actual-mode");
+        }
 
         if (actualSearchMode) {
           setupActualSearchMode();
