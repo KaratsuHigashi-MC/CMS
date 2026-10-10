@@ -125,6 +125,22 @@
         padding: 16px 12px 30px;
       }
 
+      .actual-keypad-mode .container {
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        min-height: calc(100vh - 50px);
+
+        min-height: calc(100dvh - 50px);
+
+        padding-top: 16px;
+
+        padding-bottom: 16px;
+      }
+
       .page-title {
         margin: 0 0 14px;
 
@@ -185,6 +201,228 @@
         padding: 16px;
 
         margin-bottom: 12px;
+      }
+
+      .search-card.actual-hidden,
+      .main-menu.actual-hidden,
+      .add-card.actual-hidden {
+        display: none;
+      }
+
+      .keypad-card {
+        display: none;
+
+        width: 100%;
+
+        max-width: 480px;
+
+        margin: auto;
+
+        padding: 16px;
+
+        background: #fff;
+
+        border: 1px solid #ddd;
+
+        border-radius: 7px;
+      }
+
+      .keypad-card.show {
+        display: block;
+      }
+
+      .keypad-heading-row {
+        display: flex;
+
+        flex-wrap: wrap;
+
+        align-items: center;
+
+        gap: 8px;
+
+        margin-bottom: 14px;
+      }
+
+      .keypad-heading-row .section-title {
+        margin: 0;
+      }
+
+      .keypad-step {
+        display: none;
+      }
+
+      .keypad-step.active {
+        display: block;
+      }
+
+      .keypad-heading-row .message {
+        width: 100%;
+
+        margin: 0;
+
+        overflow-wrap: anywhere;
+      }
+
+      .keypad-label {
+        margin: 14px 0 8px;
+
+        color: #555;
+
+        font-size: 13px;
+
+        font-weight: 600;
+      }
+
+      .keypad-types {
+        display: grid;
+
+        grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+
+        gap: 8px;
+      }
+
+      .keypad-type-button,
+      .keypad-key,
+      .keypad-action {
+        min-height: 56px;
+
+        border: 1px solid #bbb;
+
+        border-radius: 6px;
+
+        background: #fff;
+
+        color: #222;
+
+        font: inherit;
+
+        font-size: 18px;
+
+        touch-action: manipulation;
+      }
+
+      .keypad-type-button[aria-pressed="true"] {
+        border-color: #333;
+
+        background: #333;
+
+        color: #fff;
+      }
+
+      .keypad-id-display {
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        min-height: 58px;
+
+        margin-top: 14px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 6px;
+
+        background: #f5f6f7;
+
+        font-size: 24px;
+
+        font-weight: 600;
+      }
+
+      .keypad-grid {
+        display: grid;
+
+        grid-template-columns: repeat(3, 1fr);
+
+        gap: 8px;
+
+        margin-top: 12px;
+      }
+
+      .keypad-key:last-child {
+        grid-column: 2;
+      }
+
+      .keypad-key:disabled {
+        opacity: 0.45;
+      }
+
+      .keypad-controls {
+        display: grid;
+
+        grid-template-columns: 1fr 1fr 1.5fr;
+
+        gap: 8px;
+
+        margin-top: 8px;
+      }
+
+      .keypad-action {
+        min-height: 52px;
+
+        font-size: 15px;
+      }
+
+      .keypad-action.search {
+        border-color: #333;
+
+        background: #333;
+
+        color: #fff;
+      }
+
+      .keypad-action:disabled {
+        opacity: 0.45;
+      }
+
+      .actual-result-panel {
+        display: none;
+
+        max-width: 700px;
+
+        margin: 16px auto;
+      }
+
+      .actual-result-panel.show {
+        display: block;
+      }
+
+      .actual-result-panel .message {
+        margin-bottom: 12px;
+      }
+
+      .actual-return-button {
+        width: 100%;
+
+        min-height: 44px;
+
+        border: 1px solid #bbb;
+
+        border-radius: 6px;
+
+        background: #fff;
+
+        color: #222;
+
+        font: inherit;
+
+        font-size: 14px;
+
+        touch-action: manipulation;
+      }
+
+      .actual-mode .standard-stand-actions {
+        display: none;
+      }
+
+      .actual-stand-actions {
+        display: none;
+      }
+
+      .actual-mode .actual-stand-actions {
+        display: flex;
       }
 
       .section-title {
@@ -715,6 +953,10 @@
           padding: 13px;
         }
 
+        .keypad-card {
+          padding: 13px;
+        }
+
         .info-label {
           width: 80px;
         }
@@ -759,7 +1001,7 @@
          検索
          ===================================== -->
 
-      <section class="search-card">
+      <section id="searchCard" class="search-card">
         <div class="search-heading-row">
           <h2 class="section-title">譜面台を検索</h2>
 
@@ -781,11 +1023,83 @@
         </div>
       </section>
 
+      <section id="keypadCard" class="keypad-card">
+        <div id="keypadTypeStep" class="keypad-step active">
+          <div class="keypad-heading-row">
+            <h2 class="section-title">タイプを選択</h2>
+
+            <div id="keypadMessage" class="message"></div>
+          </div>
+
+          <div id="keypadTypes" class="keypad-types"></div>
+        </div>
+
+        <div id="keypadNumberStep" class="keypad-step">
+          <div class="keypad-heading-row">
+            <h2 class="section-title">番号を入力</h2>
+
+            <button
+              class="keypad-action"
+              type="button"
+              onclick="backToKeypadTypes()"
+            >
+              タイプを選び直す
+            </button>
+          </div>
+
+          <div id="keypadIdDisplay" class="keypad-id-display" aria-live="polite">
+            タイプを選択してください
+          </div>
+
+          <div id="keypadGrid" class="keypad-grid"></div>
+
+          <div class="keypad-controls">
+            <button
+              class="keypad-action"
+              type="button"
+              onclick="backspaceKeypadNumber()"
+            >
+              1文字削除
+            </button>
+
+            <button
+              class="keypad-action"
+              type="button"
+              onclick="clearKeypadNumber()"
+            >
+              クリア
+            </button>
+
+            <button
+              id="keypadSearchButton"
+              class="keypad-action search"
+              type="button"
+              onclick="searchKeypadStand()"
+              disabled
+            >
+              検索
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="actualResultPanel" class="actual-result-panel">
+        <div id="actualResultMessage" class="message"></div>
+
+        <button
+          class="actual-return-button"
+          type="button"
+          onclick="returnToActualKeypad()"
+        >
+          別の譜面台を検索
+        </button>
+      </section>
+
       <!-- ====================================
          メニュー
          ===================================== -->
 
-      <div class="button-area">
+      <div id="mainMenu" class="button-area main-menu">
         <button class="primary-button" type="button" onclick="showAddForm()">
           ＋ 譜面台を追加
         </button>
@@ -832,7 +1146,7 @@
           <div id="memoValue" class="info-value"></div>
         </div>
 
-        <div class="button-area">
+        <div class="button-area standard-stand-actions">
           <button
             class="primary-button"
             type="button"
@@ -849,6 +1163,17 @@
             閉じる
           </button>
         </div>
+
+        <div class="button-area actual-stand-actions">
+          <button
+            class="primary-button"
+            type="button"
+            onclick="editCurrentStand()"
+          >
+            編集
+          </button>
+        </div>
+
       </section>
 
       <section id="searchResults" class="results-card">
@@ -1003,6 +1328,14 @@
 
       let currentStand = null;
 
+      let actualSearchMode = false;
+
+      let actualResultMode = false;
+
+      let keypadType = "";
+
+      let keypadNumber = "";
+
       /**
        * ========================================
        * 初期化
@@ -1024,6 +1357,12 @@
         const params = new URLSearchParams(window.location.search);
 
         const id = params.get("id");
+
+        actualSearchMode = params.get("actual") === "y" && !id;
+
+        if (actualSearchMode) {
+          setupActualSearchMode();
+        }
 
         try {
           /**
@@ -1058,6 +1397,205 @@
 
           showMessage(error.message || "データの取得に失敗しました。", "error");
         }
+      }
+
+      function setupActualSearchMode() {
+        document.getElementById("searchCard").classList.add("actual-hidden");
+
+        document.getElementById("mainMenu").classList.add("actual-hidden");
+
+        document.getElementById("addCard").classList.add("actual-hidden");
+
+        document.getElementById("keypadCard").classList.add("show");
+
+        document.body.classList.add("actual-mode");
+
+        document.body.classList.add("actual-keypad-mode");
+
+        populateKeypadTypes();
+
+        populateKeypadDigits();
+      }
+
+      function populateKeypadTypes() {
+        const container = document.getElementById("keypadTypes");
+
+        container.innerHTML = "";
+
+        STAND_TYPES.forEach((type) => {
+          const button = document.createElement("button");
+
+          button.type = "button";
+
+          button.className = "keypad-type-button";
+
+          button.textContent = type;
+
+          button.setAttribute("aria-pressed", "false");
+
+          button.addEventListener("click", () => selectKeypadType(type));
+
+          container.appendChild(button);
+        });
+      }
+
+      function populateKeypadDigits() {
+        const container = document.getElementById("keypadGrid");
+
+        container.innerHTML = "";
+
+        for (let digit = 1; digit <= 9; digit++) {
+          container.appendChild(createKeypadDigitButton(String(digit)));
+        }
+
+        container.appendChild(createKeypadDigitButton("0"));
+      }
+
+      function createKeypadDigitButton(digit) {
+        const button = document.createElement("button");
+
+        button.type = "button";
+
+        button.className = "keypad-key";
+
+        button.textContent = digit;
+
+        button.disabled = true;
+
+        button.addEventListener("click", () => enterKeypadDigit(digit));
+
+        return button;
+      }
+
+      function selectKeypadType(type) {
+        keypadType = type;
+
+        keypadNumber = "";
+
+        document
+          .querySelectorAll(".keypad-type-button")
+          .forEach((button) => {
+            button.setAttribute(
+              "aria-pressed",
+              String(button.textContent === type),
+            );
+          });
+
+        document
+          .querySelectorAll(".keypad-key")
+          .forEach((button) => (button.disabled = false));
+
+        document.getElementById("keypadTypeStep").classList.remove("active");
+
+        document.getElementById("keypadNumberStep").classList.add("active");
+
+        hideMessage();
+
+        updateKeypadDisplay();
+      }
+
+      function backToKeypadTypes() {
+        keypadType = "";
+
+        keypadNumber = "";
+
+        document.getElementById("keypadNumberStep").classList.remove("active");
+
+        document.getElementById("keypadTypeStep").classList.add("active");
+
+        document
+          .querySelectorAll(".keypad-type-button")
+          .forEach((button) => button.setAttribute("aria-pressed", "false"));
+
+        document
+          .querySelectorAll(".keypad-key")
+          .forEach((button) => (button.disabled = true));
+
+        hideMessage();
+
+        updateKeypadDisplay();
+      }
+
+      function enterKeypadDigit(digit) {
+        if (!keypadType || keypadNumber.length >= ID_NUMBER_DIGITS) {
+          return;
+        }
+
+        keypadNumber += digit;
+
+        updateKeypadDisplay();
+      }
+
+      function backspaceKeypadNumber() {
+        keypadNumber = keypadNumber.slice(0, -1);
+
+        updateKeypadDisplay();
+      }
+
+      function clearKeypadNumber() {
+        keypadNumber = "";
+
+        updateKeypadDisplay();
+      }
+
+      function updateKeypadDisplay() {
+        const display = document.getElementById("keypadIdDisplay");
+
+        if (!keypadType) {
+          display.textContent = "タイプを選択してください";
+        } else {
+          const number = keypadNumber
+            ? keypadNumber.padStart(ID_NUMBER_DIGITS, "0")
+            : "_".repeat(ID_NUMBER_DIGITS);
+
+          display.textContent = keypadType + "-" + number;
+        }
+
+        document.getElementById("keypadSearchButton").disabled =
+          !keypadType || keypadNumber.length === 0;
+      }
+
+      function searchKeypadStand() {
+        if (!keypadType || !keypadNumber) {
+          return;
+        }
+
+        const id =
+          keypadType +
+          "-" +
+          keypadNumber.padStart(ID_NUMBER_DIGITS, "0");
+
+        actualResultMode = true;
+
+        document.body.classList.remove("actual-keypad-mode");
+
+        document.getElementById("keypadCard").classList.remove("show");
+
+        document.getElementById("actualResultPanel").classList.add("show");
+
+        document.getElementById("actualResultMessage").className = "message";
+
+        document.getElementById("actualResultMessage").textContent = "";
+
+        searchStand(id);
+      }
+
+      function returnToActualKeypad() {
+        actualResultMode = false;
+
+        document.body.classList.add("actual-keypad-mode");
+
+        currentStand = null;
+
+        document.getElementById("actualResultPanel").classList.remove("show");
+
+        document.getElementById("keypadCard").classList.add("show");
+
+        hideStandInfo();
+
+        hideSearchResults();
+
+        backToKeypadTypes();
       }
 
       /**
@@ -1257,7 +1795,13 @@
       }
 
       function showMessage(text, type = "info") {
-        const element = document.getElementById("message");
+        const element = document.getElementById(
+          actualSearchMode
+            ? actualResultMode
+              ? "actualResultMessage"
+              : "keypadMessage"
+            : "message",
+        );
 
         element.textContent = text;
 
@@ -1265,7 +1809,13 @@
       }
 
       function hideMessage() {
-        const element = document.getElementById("message");
+        const element = document.getElementById(
+          actualSearchMode
+            ? actualResultMode
+              ? "actualResultMessage"
+              : "keypadMessage"
+            : "message",
+        );
 
         element.className = "message";
 
