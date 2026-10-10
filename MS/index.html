@@ -1047,7 +1047,11 @@
             </button>
           </div>
 
-          <div id="keypadIdDisplay" class="keypad-id-display" aria-live="polite">
+          <div
+            id="keypadIdDisplay"
+            class="keypad-id-display"
+            aria-live="polite"
+          >
             タイプを選択してください
           </div>
 
@@ -1173,7 +1177,6 @@
             編集
           </button>
         </div>
-
       </section>
 
       <section id="searchResults" class="results-card">
@@ -1472,14 +1475,12 @@
 
         keypadNumber = "";
 
-        document
-          .querySelectorAll(".keypad-type-button")
-          .forEach((button) => {
-            button.setAttribute(
-              "aria-pressed",
-              String(button.textContent === type),
-            );
-          });
+        document.querySelectorAll(".keypad-type-button").forEach((button) => {
+          button.setAttribute(
+            "aria-pressed",
+            String(button.textContent === type),
+          );
+        });
 
         document
           .querySelectorAll(".keypad-key")
@@ -1561,9 +1562,7 @@
         }
 
         const id =
-          keypadType +
-          "-" +
-          keypadNumber.padStart(ID_NUMBER_DIGITS, "0");
+          keypadType + "-" + keypadNumber.padStart(ID_NUMBER_DIGITS, "0");
 
         actualResultMode = true;
 
